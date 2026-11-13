@@ -1,2 +1,17 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# morpheus-certificate-install — line endings. Fixtures are byte-exact (goldens compare bytes; win.cer
+# deliberately has CRLF), so git must never convert them. Source is LF everywhere, on every OS.
+# One pattern per line: git doesn't accept several patterns on one line.
+fixtures/** -text
+crates/mci-core/src/formats/testdata/** -text
+*.sh text eol=lf
+tests/fake-appliance/* text eol=lf
+*.rs text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.mjs text eol=lf
+*.html text eol=lf
+*.yml text eol=lf
+.gitattributes text eol=lf

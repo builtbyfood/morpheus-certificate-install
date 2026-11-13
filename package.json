@@ -1,0 +1,24 @@
+{
+  "name": "morpheus-certificate-install",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "check-private": "node scripts/check-private.mjs",
+    "check-private:self-test": "node scripts/check-private.mjs --self-test",
+    "build": "tauri build",
+    "portable": "node scripts/portable.mjs",
+    "portable-smoke": "node scripts/portable-smoke.mjs",
+    "fresh-clone-check": "node scripts/fresh-clone-check.mjs",
+    "export-tree": "node scripts/export-tree.mjs",
+    "bump": "node scripts/bump-version.mjs",
+    "test:ui-contract": "node tests/ui-contract/bridge.cjs",
+    "test:click": "node tests/click/run.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0",
+    "jsdom": "^24.1.3"
+  }
+}

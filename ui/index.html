@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morpheus Certificate Install</title>
+<!-- morpheus-certificate-install 0.4.0 (Tauri build) -->
+<link rel="stylesheet" href="vendor/xterm.css">
+<style>
+:root{
+  --bg:#eef1f5; --surface:#ffffff; --sunk:#e4e8ee; --line:#d3d9e2; --text:#1b2331; --muted:#5b6678;
+  --seal:#a33a50; --seal-soft:#f3dde2; --ok:#2f8a5b; --warn:#a8741a; --err:#c23d3d; --focus:#2c5fd6;
+  --term:#151b24; --term-text:#d7dde7;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono","JetBrains Mono","Cascadia Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#141a22; --surface:#1b222d; --sunk:#111720; --line:#2b3544; --text:#dde3ec; --muted:#8f9bb0;
+  --seal:#d0677d; --seal-soft:#3a2129; --ok:#6cc495; --warn:#e3b257; --err:#ef7474; --focus:#7aa2ff;
+  --term:#0f141b; color-scheme:dark;
+}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--sans);display:grid;grid-template-rows:auto 1fr;}
+button,input,select{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:1px solid var(--line);background:var(--surface)}
+.mark{display:flex;align-items:baseline;gap:10px}
+.mark svg{align-self:center}
+.mark b{font-size:19px;letter-spacing:.01em}
+.mark small{color:var(--muted)}
+.chip{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--ok)} .dot.busy{background:var(--warn)}
+main{display:grid;grid-template-columns:minmax(420px,560px) 1fr;min-height:0}
+.steps{overflow:auto;padding:18px 20px 60px;border-right:1px solid var(--line)}
+section{margin-bottom:26px}
+section h2{display:flex;align-items:center;gap:10px;font-size:16px;margin:0 0 10px;font-weight:600}
+section h2 .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;border:1.5px solid var(--line);color:var(--muted)}
+section.done h2 .n{background:var(--seal);border-color:var(--seal);color:#fff}
+section > .body{padding-left:34px}
+p.hint{color:var(--muted);margin:4px 0 10px;font-size:14px;max-width:62ch}
+label{display:block;font-size:13px;color:var(--muted);margin:8px 0 3px}
+input[type=text],input[type=password],input[type=number],select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+input:focus-visible,button:focus-visible,select:focus-visible,.drop:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 90px;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+button{padding:7px 14px;border-radius:6px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--seal);border-color:var(--seal);color:#fff}
+button.primary:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-bottom:6px}
+.seg button{border:0;border-radius:0;background:transparent;padding:5px 14px}
+.seg button[aria-pressed=true]{background:var(--sunk);font-weight:600}
+.check{display:flex;gap:9px;align-items:flex-start;margin:7px 0;font-size:14px}
+.check input{margin-top:4px}
+.check span small{display:block;color:var(--muted)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:14px;margin-top:10px}
+.facts dt{color:var(--muted)} .facts dd{margin:0;overflow-wrap:anywhere}
+.msg{font-size:14px;margin:6px 0;padding-left:22px;position:relative}
+.msg::before{position:absolute;left:0;top:0;font-weight:700}
+.msg.ok::before{content:"✓";color:var(--ok)} .msg.warn::before{content:"!";color:var(--warn);left:4px}
+.msg.error::before{content:"✕";color:var(--err)}
+.msg.error{color:var(--err)}
+.drop{border:1.5px dashed var(--line);border-radius:8px;padding:18px;text-align:center;color:var(--muted);cursor:pointer;font-size:14px}
+.drop.over{border-color:var(--seal);background:var(--seal-soft)}
+textarea{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font:12.5px/1.4 var(--mono);resize:vertical}
+table.inputs{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0 4px}
+table.inputs td{padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.inputs td:first-child{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere;width:40%}
+table.inputs small{display:block;color:var(--muted)}
+table.inputs tr.error td:last-child{color:var(--err)} table.inputs tr.warn td:last-child{color:var(--warn)}
+.files{font-family:var(--mono);font-size:12.5px;margin-top:6px;color:var(--muted)}
+[hidden]{display:none !important} /* .watch etc. set display; hidden must still win */
+/* chain of trust: the one bold element. Links shrink to fit (no sideways scroll, nothing cut off);
+   with more than three, the seals get smaller too. */
+.chain{display:flex;align-items:stretch;gap:0;margin:16px 0 6px;padding-bottom:4px;max-width:100%}
+.link{flex:1 1 0;min-width:0;max-width:150px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+.link + .link::before{content:"";position:absolute;top:34px;right:calc(50% + 34px);width:calc(100% - 68px);height:2px;background:var(--line)}
+.seal{width:68px;height:68px;position:relative}
+.seal svg{width:68px;height:68px}
+.link .cn{font-weight:600;font-size:13px;margin-top:6px;overflow-wrap:anywhere;padding:0 4px}
+.link .role{font-size:12px;color:var(--muted)}
+.life{width:100px;height:4px;background:var(--sunk);border-radius:2px;margin:6px auto 2px;overflow:hidden}
+.life i{display:block;height:100%;background:var(--ok)}
+.life.warn i{background:var(--warn)} .life.err i{background:var(--err)}
+.link .exp{font-size:12px;color:var(--muted)}
+.life{max-width:80%}
+.chain.many .seal,.chain.many .seal svg{width:52px;height:52px}
+.chain.many .link + .link::before{top:26px;right:calc(50% + 26px);width:calc(100% - 52px)}
+.chain.many .link .cn{font-size:12px}
+.why{display:block;margin:-2px 0 8px 28px;font-size:12.5px;color:var(--muted)}
+.warnText{color:var(--err)}
+ul.cleanList{max-height:260px;overflow:auto;font-size:12.5px;padding-left:18px;margin:6px 0}
+ul.cleanList code{overflow-wrap:anywhere}
+details{margin-top:6px;font-size:13px}
+details summary{cursor:pointer;color:var(--muted)}
+pre{font-family:var(--mono);font-size:12.5px;white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0}
+.diff{background:var(--sunk);border-radius:6px;padding:10px;max-height:260px;overflow:auto}
+.diff .a{color:var(--ok)} .diff .d{color:var(--err)} .diff .h{color:var(--muted)}
+ol.plan{padding-left:20px;margin:8px 0;font-size:14px}
+ol.plan li{margin:6px 0}
+ol.plan li pre{color:var(--muted);margin:2px 0 0}
+table.list{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+table.list td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.list td:last-child{text-align:right;white-space:nowrap}
+.console{display:grid;grid-template-rows:auto auto 1fr auto;min-height:0;background:var(--term)}
+.ctabs{display:flex;gap:2px;padding:8px 10px 0;border-bottom:1px solid #222b38}
+.ctabs button{background:transparent;border:0;border-radius:6px 6px 0 0;color:#8f9bb0;padding:6px 14px}
+.ctabs button[aria-selected=true]{background:#1d2532;color:#e6ebf3}
+.ctabs .spacer{flex:1}
+.ctabs .act{font-size:13px;color:#8f9bb0;border:1px solid #2b3544;border-radius:6px;padding:3px 10px;margin-bottom:6px}
+.tracker{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;color:#aab4c4;font-size:12.5px;min-height:20px}
+.tracker span{padding:2px 8px;border-radius:10px;border:1px solid #2b3544}
+.tracker .running{border-color:#e3b257;color:#e3b257}
+.tracker .ok{border-color:#3f7d5b;color:#6cc495}
+.tracker .fail{border-color:#a34545;color:#ef7474}
+.pane{min-height:0;padding:6px 6px 0 10px;display:none}
+.pane.on{display:block}
+.pane .xt{height:100%}
+.watch{display:flex;gap:8px;align-items:center;padding:7px 12px;border-top:1px solid #222b38;color:#8f9bb0;font-size:12.5px;font-family:var(--mono)}
+.watch code{color:#d7dde7;overflow:auto;white-space:nowrap;flex:1}
+.watch button{font-size:12px;padding:2px 9px;background:transparent;border-color:#2b3544;color:#aab4c4}
+.fallback{color:var(--term-text);font:12.5px/1.45 var(--mono);white-space:pre-wrap;height:100%;overflow:auto;margin:0}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);max-width:560px}
+dialog::backdrop{background:rgba(10,14,20,.55)}
+.toast{position:fixed;bottom:16px;left:20px;max-width:520px;background:var(--surface);border:1px solid var(--err);color:var(--err);padding:10px 14px;border-radius:8px;display:none;font-size:14px;z-index:5}
+@media (max-width:980px){main{grid-template-columns:1fr}.steps{border-right:0}.console{min-height:70vh}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="var(--seal)"/><circle cx="13" cy="13" r="6.5" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M10 13.2l2.1 2.1 4-4.4" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <b>Morpheus Certificate Install</b><small id="ver">v0.3.0</small>
+  </div>
+  <div class="chip"><span class="dot" id="dot"></span><span id="chipText">Not connected</span>
+    <button id="btnDisconnect" hidden>Disconnect</button></div>
+</header>
+<main>
+<div class="steps">
+
+<section id="s1">
+  <h2><span class="n">1</span>Connect to the appliance</h2>
+  <div class="body">
+    <div class="seg" role="group" aria-label="Connection type">
+      <button id="modeSsh" aria-pressed="true">SSH</button><button id="modeCharon" aria-pressed="false">Charon session</button>
+    </div>
+    <div id="sshForm">
+      <div class="row"><div><label for="host">Host</label><input type="text" id="host" placeholder="appliance.example.com" autocomplete="off"></div>
+        <div><label for="port">Port</label><input type="number" id="port" value="22"></div></div>
+      <label for="user">User</label><input type="text" id="user" autocomplete="off">
+      <div class="row3">
+        <div><label for="password">Password</label><input type="password" id="password" autocomplete="off"></div>
+        <div><label for="sudoPw">Sudo password</label><input type="password" id="sudoPw" placeholder="same as password" autocomplete="off"></div>
+      </div>
+      <details><summary>Use a key file instead</summary>
+        <label for="keyPath">Private key path (on this machine)</label><input type="text" id="keyPath" placeholder="~/.ssh/id_ed25519">
+        <label for="keyPass">Key passphrase</label><input type="password" id="keyPass" autocomplete="off">
+      </details>
+      <div id="charonHosts"></div>
+    </div>
+    <div id="charonForm" hidden>
+      <p class="hint">Runs each step in a session you already have open in Charon, through Charon's MCP server. At the exec-approve tier you'll approve every command in Charon; at trusted, they run straight away. The live log is polled from the appliance.</p>
+      <label for="charonDir">Charon data folder (leave empty to find it; for portable builds point at its <code>data</code> folder)</label>
+      <input type="text" id="charonDir">
+      <div class="btns"><button id="btnCharonFind">Find Charon</button></div>
+      <div id="charonOut"></div>
+    </div>
+    <div class="btns"><button class="primary" id="btnConnect">Connect</button><button id="btnPreflight" disabled>Check appliance</button><button id="btnForget" title="Remove this appliance's saved host key and settings from this computer">Forget this appliance</button></div>
+    <label class="check" id="lntRow" hidden><input type="checkbox" id="optLnt"><span>Leave no trace<small>Portable app: save nothing to settings, and delete this app's data folder (settings, host keys, browser profile) when it closes.</small></span></label>
+    <div id="factsOut"></div>
+  </div>
+</section>
+
+<section id="s2">
+  <h2><span class="n">2</span>Load and convert the certificate</h2>
+  <div class="body">
+    <p class="hint">Drop everything the CA or the customer sent — any mix of PEM, DER, PKCS#7 (.p7b), PFX/P12, Java keystore (.jks), or key files in any format. Morpheus Certificate Install reads them by content, puts the chain in order and converts it to what Morpheus needs. This step works without connecting, so you can just convert and download.</p>
+    <div class="drop" id="drop" tabindex="0" role="button">Drop certificate, key, bundle, PFX, P7B or JKS files, or click to choose</div>
+    <input type="file" id="fileIn" multiple hidden>
+    <div class="files" id="fileList"></div>
+    <details id="pasteBox"><summary>Paste PEM text instead</summary>
+      <label for="pasted">Certificate, chain or key text (as pasted from an email or CA portal)</label>
+      <textarea id="pasted" rows="6" spellcheck="false"></textarea>
+    </details>
+    <div class="row3">
+      <div><label for="pfxPw">PFX / keystore password</label><input type="password" id="pfxPw" autocomplete="off"></div>
+      <div><label for="keyPw">Key passphrase</label><input type="password" id="keyPw" autocomplete="off"></div>
+    </div>
+    <label for="fqdn">Appliance FQDN</label><input type="text" id="fqdn" placeholder="taken from the certificate if empty">
+    <div class="btns"><button class="primary" id="btnAnalyze">Check certificate</button><button id="btnClear">Clear files</button></div>
+    <div id="chainOut"></div>
+    <div class="btns" id="convBtns" hidden><button id="btnFetch" hidden>Fetch missing chain from the CA</button><button id="btnExport">Download files for Morpheus (.zip)</button></div>
+    <div id="convOut"></div>
+  </div>
+</section>
+
+<section id="s3">
+  <h2><span class="n">3</span>Review and install</h2>
+  <div class="body">
+    <label class="check"><input type="checkbox" id="optServer" checked><span>Serve this certificate from nginx<small>Writes /etc/morpheus/ssl/&lt;fqdn&gt;.crt and .key and points morpheus.rb at them.</small></span></label>
+    <label class="check"><input type="checkbox" id="optRoot"><span>Include the root in the served chain<small>Usually off — clients bring their own root.</small></span></label>
+    <label class="check"><input type="checkbox" id="optTrust"><span>Trust this CA inside Morpheus<small>Imports the root and intermediates into Morpheus' Java truststore, so the appliance trusts its own URL and other endpoints signed by this CA. Use it for a private CA.</small></span></label>
+    <span class="why" id="trustWhy"></span>
+    <label class="check"><input type="checkbox" id="optUi"><span>Restart morpheus-ui afterwards<small>Needed for the truststore change to load. The UI is down while it starts, often 5–10 minutes.</small></span></label>
+    <div class="btns"><button id="btnPlan">Review plan</button></div>
+    <div id="planOut"></div>
+  </div>
+</section>
+
+<section id="s4">
+  <h2><span class="n">4</span>Verify</h2>
+  <div class="body">
+    <p class="hint">Checks what nginx serves on the appliance, and the chain and hostname from this machine. Runs automatically after an install.</p>
+    <div class="row"><div><label for="vHost">Name to check</label><input type="text" id="vHost"></div><div><label for="vPort">Port</label><input type="number" id="vPort" value="443"></div></div>
+    <label for="vAddr">Connect to address (optional — use the IP if DNS isn't pointing there yet)</label><input type="text" id="vAddr">
+    <div class="btns"><button id="btnVerify">Verify now</button></div>
+    <div id="verifyOut"></div>
+    <details id="apiBox"><summary>Morpheus API check (optional)</summary>
+      <p class="hint">Confirms the API answers over the new certificate and whether the Appliance URL setting is covered by it. The token is kept in memory only.</p>
+      <label for="mUrl">Morpheus URL</label><input type="text" id="mUrl" placeholder="https://appliance.example.com">
+      <label for="mTok">API token</label><input type="password" id="mTok" autocomplete="off">
+      <div class="btns"><button id="btnApi">Check API</button></div>
+      <div id="apiOut"></div>
+    </details>
+  </div>
+</section>
+
+<section id="s5">
+  <h2><span class="n">5</span>Runs and backups</h2>
+  <div class="body">
+    <p class="hint">Every install backs up /etc/morpheus/ssl and morpheus.rb first. Rolling back restores them and runs reconfigure + nginx restart; the state it replaces is saved as its own backup.</p>
+    <div class="btns"><button id="btnRuns">Show runs</button><button id="btnBackups">Show backups</button><button id="btnCleanup">Clean up this appliance</button></div>
+    <div id="runsOut"></div>
+  </div>
+</section>
+
+</div>
+
+<div class="console">
+  <div class="ctabs" role="tablist">
+    <button role="tab" aria-selected="true" id="tabRun">Run log</button>
+    <button role="tab" aria-selected="false" id="tabShell">Shell</button>
+    <span class="spacer"></span>
+    <button class="act" id="btnStop" hidden>Stop following</button>
+    <button class="act" id="btnClearLog">Clear</button>
+  </div>
+  <div class="tracker" id="tracker"></div>
+  <div class="pane on" id="paneRun"><div class="xt" id="xtRun"></div></div>
+  <div class="pane" id="paneShell"><div class="xt" id="xtShell"></div></div>
+  <div class="watch" id="watch" hidden><span>Watch from any terminal:</span><code id="watchCmd"></code><button id="btnCopyWatch">Copy</button></div>
+</div>
+</main>
+
+<dialog id="dlg"><form method="dialog"><h3 id="dlgTitle" style="margin-top:0"></h3><div id="dlgBody"></div>
+  <div class="btns" style="justify-content:flex-end"><button value="cancel">Cancel</button><button class="primary" value="ok" id="dlgOk">OK</button></div></form></dialog>
+<div class="toast" id="toast" role="alert"></div>
+
+<script src="vendor/xterm.js"></script>
+<script src="vendor/addon-fit.js"></script>
+<script src="bridge.js"></script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let state = {}, mode = "ssh", files = [], charonSession = null;
+
+// api() and the event stream come from bridge.js (Tauri invoke/listen); same bodies as the Python /api/* routes.
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast.h); toast.h = setTimeout(() => t.style.display = "none", 9000); }
+async function guard(btn, fn) { if (btn) btn.disabled = true; try { return await fn(); } catch (e) { toast(e.message); } finally { if (btn) btn.disabled = false; } }
+function confirmDlg(title, html, okText) {
+  return new Promise((res) => { $("dlgTitle").textContent = title; $("dlgBody").innerHTML = html; $("dlgOk").textContent = okText || "OK";
+    const d = $("dlg"); d.returnValue = ""; d.onclose = () => res(d.returnValue === "ok"); d.showModal(); });
+}
+
+/* ---------------- terminals */
+const termTheme = {background: "#0f141b", foreground: "#d7dde7", cursor: "#d0677d", selectionBackground: "#2c3a52"};
+function plainTerm(el) {
+  el.innerHTML = ""; const pre = document.createElement("pre"); pre.className = "fallback"; el.appendChild(pre);
+  return {write: (s) => { if (typeof s !== "string") s = new TextDecoder().decode(s); pre.textContent += s.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "").replace(/\r/g, ""); pre.scrollTop = pre.scrollHeight; },
+    clear: () => pre.textContent = "", fit() {}, onData() {}, cols: 120, rows: 32, focus() {}};
+}
+function mkTerm(el, opts) {
+  if (!window.Terminal) return plainTerm(el);
+  try { return xtTerm(el, opts); } catch (e) { console.warn("[mci] xterm failed, using plain output", e); return plainTerm(el); }
+}
+function xtTerm(el, opts) {
+  const t = new Terminal(Object.assign({fontFamily: getComputedStyle(document.body).getPropertyValue("--mono"), fontSize: 13, theme: termTheme, scrollback: 20000, convertEol: false}, opts || {}));
+  const fit = new FitAddon.FitAddon(); t.loadAddon(fit); t.open(el); t.fit = () => { try { fit.fit(); } catch (_) {} }; setTimeout(t.fit, 50); return t;
+}
+const runT = mkTerm($("xtRun"), {disableStdin: true, cursorBlink: false, convertEol: true});
+const shT = mkTerm($("xtShell"), {cursorBlink: true});
+let shellOpen = false;
+window.addEventListener("resize", () => { runT.fit(); shT.fit(); if (shellOpen) api("/api/shell/resize", {cols: shT.cols, rows: shT.rows}).catch(() => {}); });
+function logLine(s, color) { runT.write((color ? `\x1b[${color}m` : "") + s.replace(/\n/g, "\r\n") + (color ? "\x1b[0m" : "")); }
+shT.onData((d) => { if (shellOpen) api("/api/shell/input", {b64: btoa(unescape(encodeURIComponent(d)))}).catch((e) => toast(e.message)); });
+function b64ToBytes(b) { const s = atob(b); const a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+
+function selectTab(which) {
+  $("tabRun").setAttribute("aria-selected", which === "run"); $("tabShell").setAttribute("aria-selected", which === "shell");
+  $("paneRun").classList.toggle("on", which === "run"); $("paneShell").classList.toggle("on", which === "shell");
+  (which === "run" ? runT : shT).fit();
+  if (which === "shell") openShell();
+}
+$("tabRun").onclick = () => selectTab("run");
+$("tabShell").onclick = () => selectTab("shell");
+async function openShell() {
+  if (shellOpen || !state.connected) { if (!state.connected) shT.write("\r\nConnect first.\r\n"); return; }
+  if (state.transport && !state.transport.shell) { shT.write("\r\nWith a Charon session, the Charon tab is your shell. Use the watch command below to follow a run there.\r\n"); return; }
+  try { shT.fit(); await api("/api/shell/open", {cols: shT.cols, rows: shT.rows}); shellOpen = true; shT.focus(); } catch (e) { toast(e.message); }
+}
+$("btnClearLog").onclick = () => { runT.clear(); $("tracker").innerHTML = ""; };
+
+/* ---------------- events */
+const tracker = {};
+function track(id, status) {
+  if (!id.startsWith("run:")) return;
+  const name = id.slice(4); let el = tracker[name];
+  if (!el || !el.isConnected) { el = document.createElement("span"); el.textContent = name; $("tracker").appendChild(el); tracker[name] = el; }
+  el.className = status;
+}
+function planStep(id, status) {
+  const li = document.querySelector(`#planOut li[data-id="${id}"]`);
+  if (li) li.dataset.status = status, li.querySelector(".st").textContent = {running: " — running", ok: " — done", fail: " — failed"}[status] || "";
+}
+function handleEvent(ev) {
+    switch (ev.type) {
+      case "log": logLine(ev.text, ev.text.startsWith("\n✖") || ev.text.startsWith("!") ? "31" : "36"); break;
+      case "remote": runT.write(ev.text.replace(/\r?\n/g, "\r\n").replace(/^@@MCI.*$/gm, (l) => `\x1b[35m${l}\x1b[0m`)); break;
+      case "step": track(ev.id, ev.status); planStep(ev.id, ev.status); break;
+      case "shell": shT.write(b64ToBytes(ev.data)); break;
+      case "shell_closed": shellOpen = false; shT.write("\r\n[shell closed — click the Shell tab to reopen]\r\n"); break;
+      case "run": $("watch").hidden = false; $("watchCmd").textContent = ev.watch; selectTab("run"); break;
+      case "job": onJob(ev); break;
+      case "facts": state.facts = ev.facts; renderFacts(); break;
+      case "verify": renderVerify(ev.result); break;
+      case "connected": case "disconnected": refresh(); break;
+    }
+}
+function connectEvents() { mciListen(handleEvent); }
+function onJob(ev) {
+  const busy = ev.status === "running";
+  $("dot").className = "dot " + (busy ? "busy" : state.connected ? "on" : "");
+  $("btnStop").hidden = !(busy && ["apply", "reattach", "rollback"].includes(ev.name));
+  if (ev.status === "done" && ev.name === "apply") {
+    const r = ev.result || {};
+    logLine(r.ok ? "\n✓ Certificate installed.\n" : "\n✖ Install did not finish cleanly — see above. Backup: " + (r.backup || "n/a") + "\n", r.ok ? "32" : "31");
+    if (r.ok) $("s3").classList.add("done");
+    $("planOut").querySelector("#btnApply")?.remove();
+  }
+  if (ev.status === "done" && ev.name === "preflight") $("s1").classList.add("done");
+  if (ev.status === "done" && ev.name === "rollback") logLine(ev.result?.ok ? "\n✓ Rolled back.\n" : "\n✖ Rollback runner reported a failure.\n", ev.result?.ok ? "32" : "31");
+  if (ev.status === "done" && ev.name === "cleanup") logLine(ev.result?.ok ? `\n✓ Cleaned up: ${ev.result.removed} item(s) removed.\n` : "\n✖ Some items couldn't be removed — see above.\n", ev.result?.ok ? "32" : "31");
+}
+$("btnStop").onclick = () => api("/api/stop", {}).then((r) => logLine("\n" + r.note + "\n", "33"));
+$("btnCopyWatch").onclick = () => navigator.clipboard.writeText($("watchCmd").textContent);
+
+/* ---------------- step 1 */
+function setMode(m) { mode = m; $("modeSsh").setAttribute("aria-pressed", m === "ssh"); $("modeCharon").setAttribute("aria-pressed", m === "charon");
+  $("sshForm").hidden = m !== "ssh"; $("charonForm").hidden = m !== "charon"; }
+$("modeSsh").onclick = () => setMode("ssh");
+$("modeCharon").onclick = () => { setMode("charon"); findCharon(); };
+async function findCharon() {
+  const out = $("charonOut");
+  await guard($("btnCharonFind"), async () => {
+    const d = await api("/api/charon", {charon_dir: $("charonDir").value.trim()});
+    let h = "";
+    if (!d.data_dir) h = `<p class="msg warn">Charon's data folder wasn't found. Looked in: ${d.searched.map(esc).join(", ")}</p>`;
+    else if (!d.endpoint) h = `<p class="msg warn">Found Charon at ${esc(d.data_dir)}, but its MCP server isn't running. Start it from Charon's MCP panel, then Find Charon again.</p>`;
+    else if (d.sessions_error) h = `<p class="msg error">${esc(d.sessions_error)}</p>`;
+    else {
+      const ssh = (d.sessions || []).filter((s) => s.kind === "ssh");
+      h = ssh.length ? `<label>Open SSH sessions in Charon</label>` + ssh.map((s) => `<label class="check"><input type="radio" name="csess" value="${esc(s.id)}"><span>${esc(s.title)}<small>${esc(s.host || "")} · tier ${esc(s.tier)}</small></span></label>`).join("")
+        : `<p class="msg warn">No SSH sessions are open in Charon. Open one to the appliance, then Find Charon again.</p>`;
+    }
+    out.innerHTML = h;
+    out.querySelectorAll("input[name=csess]").forEach((r) => r.onchange = () => charonSession = r.value);
+    renderCharonHosts(d.hosts || []);
+  });
+}
+$("btnCharonFind").onclick = findCharon;
+function renderCharonHosts(hosts) {
+  if (!hosts.length) { $("charonHosts").innerHTML = ""; return; }
+  $("charonHosts").innerHTML = `<details><summary>Fill from a Charon saved host (${hosts.length})</summary><table class="list">` +
+    hosts.map((h, i) => `<tr><td>${esc(h.path ? h.path + " / " : "")}<b>${esc(h.name)}</b><br><small>${esc(h.user ? h.user + "@" : "")}${esc(h.host)}:${h.port}${h.jump_host ? " via " + esc(h.jump_host) : ""}</small></td><td><button data-i="${i}">Use</button></td></tr>`).join("") + "</table></details>";
+  $("charonHosts").querySelectorAll("button").forEach((b) => b.onclick = () => { const h = hosts[+b.dataset.i]; $("host").value = h.host; $("port").value = h.port; $("user").value = h.user; if (h.jump_host) toast("This host uses a jump host in Charon; Morpheus Certificate Install' SSH connects directly. Use the Charon session mode instead if you need the bastion."); });
+}
+
+async function connect(trustFp) {
+  if (mode === "charon") {
+    if (!charonSession) throw new Error("Pick a Charon session first.");
+    return api("/api/connect", {mode: "charon", session: charonSession, charon_dir: $("charonDir").value.trim()});
+  }
+  return api("/api/connect", {mode: "ssh", host: $("host").value, port: $("port").value, user: $("user").value, password: $("password").value,
+    sudo_password: $("sudoPw").value, key_path: $("keyPath").value, key_passphrase: $("keyPass").value, trust_fingerprint: trustFp || ""});
+}
+$("btnConnect").onclick = () => guard($("btnConnect"), async () => {
+  let r = await connect();
+  if (r.hostkey) {
+    const hk = r.hostkey;
+    if (hk.mismatch) throw new Error(`The host key for ${hk.host} has CHANGED (${hk.type} ${hk.fingerprint}). Morpheus Certificate Install won't connect. If the appliance was rebuilt, check this fingerprint on the appliance, then click "Forget this appliance" and connect again.`);
+    const ok = await confirmDlg("New host key", `<p>First connection to <b>${esc(hk.host)}</b>. Check this fingerprint against the appliance (<code>ssh-keygen -lf /etc/ssh/ssh_host_${esc(hk.type.replace("ssh-", "").replace("ecdsa-sha2-nistp256", "ecdsa"))}_key.pub</code>) before trusting it.</p><pre>${esc(hk.type)}\n${esc(hk.fingerprint)}</pre>`, "Trust and connect");
+    if (!ok) return;
+    r = await connect(hk.fingerprint);
+  }
+  await refresh();
+  await api("/api/preflight", {});
+});
+$("btnPreflight").onclick = () => guard($("btnPreflight"), () => api("/api/preflight", {}));
+$("btnDisconnect").onclick = () => guard(null, async () => { await api("/api/disconnect", {}); shellOpen = false; await refresh(); });
+
+function renderFacts() {
+  const f = state.facts; if (!f) { $("factsOut").innerHTML = ""; return; }
+  const s = f.served || {}; const l = s.leaf || {};
+  const nginx = f.nginx_ssl || {};
+  let h = `<dl class="facts"><dt>Host</dt><dd>${esc(f.host)}</dd><dt>OS</dt><dd>${esc(f.os)}</dd>
+    <dt>Morpheus</dt><dd>${esc(f.ver || "version unknown")}</dd><dt>Sudo</dt><dd>${esc(f.transport?.sudo_mode)}</dd>
+    <dt>Runner</dt><dd>${f.systemdrun === "yes" ? "transient systemd unit" : "setsid (no systemd)"}</dd>
+    <dt>Serving now</dt><dd>${s.ok ? `${esc(l.cn)} — issued by ${esc((l.issuer || "").replace(/^CN=/, ""))}, expires ${esc((l.not_after || "").slice(0, 10))}${l.self_signed ? " (self-signed)" : ""}` : esc(s.error || "unknown")}</dd>
+    <dt>morpheus.rb</dt><dd>${nginx.ssl_certificate ? esc(nginx.ssl_certificate) + "<br>" + esc(nginx.ssl_server_key || "(no ssl_server_key)") : "no nginx ssl lines — using the generated self-signed pair"}</dd>
+    ${f.appliance_url_rb ? `<dt>appliance_url</dt><dd>${esc(f.appliance_url_rb)}</dd>` : ""}</dl>`;
+  h += (f.problems || []).map((p) => `<p class="msg error">${esc(p)}</p>`).join("");
+  $("factsOut").innerHTML = h;
+  if (!$("vHost").value && state.analysis?.fqdn) $("vHost").value = state.analysis.fqdn;
+}
+
+/* ---------------- step 2 */
+const drop = $("drop");
+drop.onclick = () => $("fileIn").click();
+drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("fileIn").click(); } };
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove("over"); addFiles(e.dataTransfer.files); };
+$("fileIn").onchange = (e) => addFiles(e.target.files);
+async function addFiles(list) {
+  for (const f of list) {
+    const buf = new Uint8Array(await f.arrayBuffer()); let s = ""; for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+    files = files.filter((x) => x.name !== f.name); files.push({name: f.name, b64: btoa(s)});
+  }
+  $("fileList").textContent = files.map((f) => f.name).join("  ·  ");
+}
+$("btnClear").onclick = () => guard(null, async () => { files = []; $("fileList").textContent = ""; $("chainOut").innerHTML = ""; $("convOut").innerHTML = ""; $("convBtns").hidden = true; state.analysis = null;
+  $("optTrust").checked = false; $("optUi").checked = false; $("trustWhy").textContent = ""; $("s2").classList.remove("done"); await api("/api/clear-files", {}); });
+$("btnFetch").onclick = () => guard($("btnFetch"), async () => {
+  const r = await api("/api/fetch-chain", {pfx_password: $("pfxPw").value, key_password: $("keyPw").value, fqdn: $("fqdn").value});
+  state.analysis = r.analysis; renderChain(r.analysis);
+  $("convOut").innerHTML = r.log.map((l) => `<p class="msg ${/^Fetched|complete/.test(l) ? "ok" : "warn"}">${esc(l)}</p>`).join("");
+});
+$("btnExport").onclick = () => guard($("btnExport"), async () => {
+  const r = await api("/api/export", {include_root: $("optRoot").checked});
+  if (!r.saved) return; // save dialog cancelled
+  $("convOut").innerHTML = `<p class="msg ok">Saved ${esc(r.saved)}: ${r.files.map(esc).join(", ")}.</p><p class="msg warn">The .key inside is decrypted, as Morpheus requires. Hand it over the way you'd hand over a password.</p>`;
+});
+$("btnAnalyze").onclick = () => guard($("btnAnalyze"), async () => {
+  const pasted = $("pasted").value;
+  if (!files.length && !pasted.trim() && !state.analysis) throw new Error("Add the certificate files or paste the PEM text first.");
+  const a = await api("/api/analyze", {files, pasted, pfx_password: $("pfxPw").value, key_password: $("keyPw").value, fqdn: $("fqdn").value});
+  files = []; $("pasted").value = ""; state.analysis = a; renderChain(a);
+});
+function sealSvg(role, level) {
+  const col = level === "error" ? "var(--err)" : level === "warn" ? "var(--warn)" : "var(--seal)";
+  const glyph = role === "server" ? '<rect x="25" y="27" width="18" height="14" rx="2" fill="none" stroke="#fff" stroke-width="2"/><path d="M28 27v-4a6 6 0 0 1 12 0v4" fill="none" stroke="#fff" stroke-width="2"/>'
+    : role === "root" ? '<path d="M34 22l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff"/>'
+    : '<path d="M24 34h20M34 24v20" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 68 68" aria-hidden="true"><path d="M34.0 3.0 L41.1 7.4 L49.5 7.2 L53.4 14.6 L60.8 18.5 L60.6 26.9 L65.0 34.0 L60.6 41.1 L60.8 49.5 L53.4 53.4 L49.5 60.8 L41.1 60.6 L34.0 65.0 L26.9 60.6 L18.5 60.8 L14.6 53.4 L7.2 49.5 L7.4 41.1 L3.0 34.0 L7.4 26.9 L7.2 18.5 L14.6 14.6 L18.5 7.2 L26.9 7.4Z" fill="${col}"/><circle cx="34" cy="34" r="19" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2"/>${glyph}</svg>`;
+}
+function renderChain(a) {
+  let h = "";
+  if (a.inputs && a.inputs.length) h += `<table class="inputs" aria-label="What each input turned out to be">` + a.inputs.map((r) => `<tr class="${esc(r.level)}"><td>${esc(r.name)}</td><td>${esc(r.format)}${r.notes.map((n) => `<small>${esc(n)}</small>`).join("")}</td></tr>`).join("") + `</table>`;
+  if (a.chain.length) {
+    h += `<div class="chain${a.chain.length > 3 ? " many" : ""}" role="list" aria-label="Certificate chain">` + a.chain.map((c) => {
+      const pct = Math.max(2, Math.min(100, 100 - Math.round(100 * c.used_days / c.lifetime_days)));
+      const lvl = c.days_left < 0 ? "err" : c.days_left < 30 ? "warn" : "";
+      return `<div class="link" role="listitem"><div class="seal">${sealSvg(c.role, lvl === "err" ? "error" : lvl)}</div>
+        <div class="cn">${esc(c.cn)}</div><div class="role">${c.role === "server" ? "server" : c.role}</div>
+        <div class="life ${lvl}" title="${c.days_left} days left"><i style="width:${pct}%"></i></div>
+        <div class="exp">${c.days_left < 0 ? "expired" : c.days_left + " days left"}</div></div>`;
+    }).join("") + `</div>`;
+    const leaf = a.chain[0];
+    h += `<details><summary>Certificate details</summary><pre>${a.chain.map((c) => `${c.role.toUpperCase()}  ${c.subject}\n  issuer   ${c.issuer}\n  valid    ${c.not_before.slice(0, 10)} → ${c.not_after.slice(0, 10)}\n  key      ${c.key}, ${c.sig_alg}\n  sha256   ${c.sha256}${c.role === "server" ? `\n  SANs     ${[...c.san_dns, ...c.san_ip].join(", ") || "none"}` : ""}\n  from     ${c.source}`).map(esc).join("\n\n")}</pre></details>`;
+    if (!$("fqdn").value) $("fqdn").placeholder = a.fqdn;
+    if (!$("vHost").value) $("vHost").value = a.fqdn;
+    if (!$("mUrl").value && a.fqdn) $("mUrl").value = `https://${a.fqdn}`;
+  }
+  // The app decides from the actual CAs (built-in and OS trust stores): trust_default + trust_reason.
+  // Every analysis sets it, with or without a chain, so nothing from an earlier one stays (0.3.20).
+  $("optTrust").checked = !!a.trust_default;
+  $("trustWhy").textContent = a.trust_reason || "";
+  $("optUi").checked = $("optTrust").checked;
+  h += a.checks.map((c) => `<p class="msg ${c.level}">${esc(c.text)}</p>`).join("");
+  if (a.ok) h += `<p class="hint">Files on the appliance: <code>/etc/morpheus/ssl/${esc(a.file_base)}.crt</code> and <code>.key</code></p>`;
+  $("chainOut").innerHTML = h;
+  $("s2").classList.toggle("done", a.ok);
+  $("convBtns").hidden = !(a.ok || a.can_fetch_chain);
+  $("btnFetch").hidden = !a.can_fetch_chain;
+  $("btnExport").hidden = !a.ok;
+}
+$("optTrust").onchange = () => { $("optUi").checked = $("optTrust").checked; };
+
+/* ---------------- step 3 */
+$("btnPlan").onclick = () => guard($("btnPlan"), async () => {
+  const p = await api("/api/plan", {server: $("optServer").checked, include_root: $("optRoot").checked, trust: $("optTrust").checked, restart_ui: $("optUi").checked});
+  state.plan = p; renderPlan(p);
+});
+function renderPlan(p) {
+  let h = `<ol class="plan">` + p.steps.map((s) => `<li data-id="${esc(s.id)}"><b>${esc(s.title)}</b><span class="st"></span>${s.detail ? `<pre>${esc(s.detail)}</pre>` : ""}</li>`).join("") + `</ol>`;
+  if (p.rb_diff) h += `<details open><summary>morpheus.rb change</summary><pre class="diff">${p.rb_diff.split("\n").map((l) => `<span class="${l.startsWith("+") && !l.startsWith("+++") ? "a" : l.startsWith("-") && !l.startsWith("---") ? "d" : l.startsWith("@@") ? "h" : ""}">${esc(l)}</span>`).join("\n")}</pre></details>`;
+  h += `<div class="btns"><button class="primary" id="btnApply">Install certificate</button></div>`;
+  $("planOut").innerHTML = h;
+  $("btnApply").onclick = () => guard($("btnApply"), async () => {
+    const ok = await confirmDlg("Install on " + (state.transport?.label || "the appliance"), `<p>nginx restarts at the end, so open browser tabs and API clients drop for a few seconds${p.restart_ui ? ", and the Morpheus UI will be down while morpheus-ui restarts (often 5–10 minutes)" : ""}. A backup is taken first and Rollback is on step 5.</p><p>The run continues on the appliance even if this window closes.</p>`, "Install");
+    if (!ok) return;
+    $("tracker").innerHTML = ""; Object.keys(tracker).forEach((k) => delete tracker[k]);
+    selectTab("run"); logLine(`\n── install ${p.stamp} ──\n`, "1;35");
+    await api("/api/apply", {confirm: p.stamp});
+  });
+}
+
+/* ---------------- step 4 */
+$("btnVerify").onclick = () => guard($("btnVerify"), () => api("/api/verify", {fqdn: $("vHost").value, port: $("vPort").value, connect_addr: $("vAddr").value}));
+function renderVerify(v) {
+  let h = "";
+  if (v.remote) h += v.remote.ok ? `<p class="msg ${v.remote.matches_new ? "ok" : state.analysis ? "warn" : "ok"}">On the appliance nginx serves "${esc(v.remote.leaf.cn)}", ${v.remote.chain_len} certificate(s) in the chain${state.analysis ? v.remote.matches_new ? " — the new certificate." : " — not the certificate loaded in step 2." : "."}</p>` : `<p class="msg error">On the appliance: ${esc(v.remote.error)}</p>`;
+  if (v.local) h += `<p class="msg ${v.local.ok ? "ok" : "error"}">From this machine (${esc(v.local.addr)}): ${esc(v.local.summary)}</p>`;
+  $("verifyOut").innerHTML = h;
+  if (v.local?.ok && v.remote?.matches_new) $("s4").classList.add("done");
+}
+$("btnApi").onclick = () => guard($("btnApi"), async () => {
+  const r = await api("/api/morpheus", {url: $("mUrl").value, token: $("mTok").value}); $("mTok").value = ""; renderApi(r);
+});
+function renderApi(r) {
+  if (r.error) { $("apiOut").innerHTML = `<p class="msg error">${esc(r.error)}</p>`; return; }
+  let h = `<p class="msg ${r.verified_tls ? "ok" : "warn"}">${r.verified_tls ? "API reached over a verified TLS connection" : "API reached, but TLS did not verify: " + esc(r.tls_error)} — Morpheus ${esc(r.build || "?")}, signed in as ${esc(r.user || "?")}.</p>`;
+  if (r.appliance_url) {
+    h += `<p class="msg ${r.appliance_url_covered === false ? "warn" : "ok"}">Appliance URL setting: <code>${esc(r.appliance_url)}</code>${r.appliance_url_covered === false ? " — not covered by this certificate. Hosts and agents use this URL." : r.appliance_url_covered ? " — covered." : ""}</p>`;
+    const fq = state.analysis?.fqdn;
+    if (r.appliance_url_covered === false && fq) h += `<div class="btns"><button id="btnSetUrl">Change Appliance URL to https://${esc(fq)}/</button></div>`;
+  } else if (r.appliance_url_error) h += `<p class="msg warn">Couldn't read appliance settings: ${esc(r.appliance_url_error)}</p>`;
+  $("apiOut").innerHTML = h;
+  const b = $("btnSetUrl");
+  if (b) b.onclick = () => guard(b, async () => {
+    const fq = state.analysis.fqdn;
+    const ok = await confirmDlg("Change the Appliance URL?", `<p>Every VME host, agent and provisioned VM reaches Morpheus through this URL. Before changing it, make sure <b>${esc(fq)}</b> resolves from the hosts and the cluster network, and that they trust this CA. Agents may need to be reinstalled or re-pointed to pick it up.</p><p>Current: <code>${esc(r.appliance_url)}</code><br>New: <code>https://${esc(fq)}/</code></p>`, "Change it");
+    if (!ok) return;
+    renderApi(await api("/api/morpheus/appliance-url", {new_url: `https://${fq}/`}));
+  });
+}
+
+/* ---------------- step 5 */
+$("btnRuns").onclick = () => guard($("btnRuns"), async () => {
+  const r = await api("/api/runs", {});
+  $("runsOut").innerHTML = r.runs.length ? `<table class="list">` + r.runs.map((x) => `<tr><td><b>${esc(x.id)}</b><br><small>${new Date(x.mtime * 1000).toLocaleString()} · ${x.rc === null ? "still running or interrupted" : "exit " + esc(x.rc)}</small></td><td><button data-id="${esc(x.id)}">Show log</button></td></tr>`).join("") + "</table>" : `<p class="hint">No runs on this appliance yet.</p>`;
+  $("runsOut").querySelectorAll("button").forEach((b) => b.onclick = () => guard(b, async () => { selectTab("run"); logLine(`\n── run ${b.dataset.id} ──\n`, "1;35"); await api("/api/reattach", {id: b.dataset.id}); }));
+});
+$("btnBackups").onclick = () => guard($("btnBackups"), async () => {
+  const r = await api("/api/backups", {});
+  $("runsOut").innerHTML = r.backups.length ? `<table class="list">` + r.backups.map((x) => `<tr><td><b>${esc(x.id)}</b><br><small>${esc(x.note || (x.fqdn ? "before installing " + x.fqdn : ""))}</small></td><td><button data-id="${esc(x.id)}">Roll back to this</button></td></tr>`).join("") + "</table>" : `<p class="hint">No backups yet — one is taken at the start of every install.</p>`;
+  $("runsOut").querySelectorAll("button").forEach((b) => b.onclick = () => guard(b, async () => {
+    const ok = await confirmDlg("Roll back?", `<p>Restores <code>morpheus.rb</code> and <code>/etc/morpheus/ssl</code> from <b>${esc(b.dataset.id)}</b>, removes any CA aliases that install added, then runs reconfigure and restarts nginx. The current state is saved as a new backup first.</p>`, "Roll back");
+    if (!ok) return;
+    selectTab("run"); logLine(`\n── rollback to ${b.dataset.id} ──\n`, "1;35");
+    await api("/api/rollback", {id: b.dataset.id});
+  }));
+});
+
+/* ---------------- step 5: clean up (0.3.17) */
+const fmtBytes = (n) => n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 1024).toFixed(1)} KB` : `${(n / 1048576).toFixed(1)} MB`;
+$("btnCleanup").onclick = () => guard($("btnCleanup"), async () => {
+  const r = await api("/api/cleanup/list", {});
+  if (!r.items.length) { $("runsOut").innerHTML = `<p class="hint">This tool has left nothing on the appliance.</p>`; return; }
+  const t = r.totals;
+  const rows = r.items.map((e) => `<tr><td><code>${esc(e.path)}</code>${e.kind === "installed" ? (e.in_use ? " <small>(installed by this tool; morpheus.rb uses it: kept)</small>" : " <small>(installed by this tool; morpheus.rb no longer names it)</small>") : ""}${e.running ? " <small>(a run that may still be going: kept)</small>" : ""}${e.keys ? ` <small>(${e.keys} key file${e.keys > 1 ? "s" : ""})</small>` : ""}<br><small>${new Date(e.mtime * 1000).toLocaleString()}</small></td><td>${fmtBytes(e.bytes)}</td></tr>`).join("");
+  $("runsOut").innerHTML = `<p>What this tool left on the appliance:</p><table class="list">${rows}</table>
+    <label class="check"><input type="checkbox" id="clRuns" checked><span>Remove run scripts and logs<small>${t.script.count + t.log.count} file(s), ${fmtBytes(t.script.bytes + t.log.bytes)}</small></span></label>
+    ${t.stage.count ? `<label class="check"><input type="checkbox" id="clStage" checked><span>Remove the Charon staging directory<small>${fmtBytes(t.stage.bytes)}; its files are shredded</small></span></label>` : ""}
+    <label class="check"><input type="checkbox" id="clOld" checked><span>Remove backups except the newest<small>${r.newest_backup ? "keeps " + esc(r.newest_backup) : "no backups"}; every file in a removed backup is shredded (they hold previous private keys)</small></span></label>
+    <label class="check"><input type="checkbox" id="clAll"><span>Remove all backups<small class="warnText">Rollback becomes impossible: there's nothing left to roll back to.</small></span></label>
+    ${r.items.some((e) => e.kind === "installed" && !e.in_use) ? `<label class="check"><input type="checkbox" id="clInst"><span>Remove certificates and keys this tool installed that morpheus.rb no longer names<small>${r.items.filter((e) => e.kind === "installed" && !e.in_use).length} file(s) in /etc/morpheus/ssl; keys are shredded. Files this tool didn't install are never touched.</small></span></label>` : ""}
+    <div class="btns"><button class="primary" id="btnCleanGo">Review and clean up</button></div>`;
+  $("clAll").onchange = () => { if ($("clAll").checked) $("clOld").checked = true; };
+  $("btnCleanGo").onclick = () => guard($("btnCleanGo"), async () => {
+    const p = await api("/api/cleanup/plan", {runs: $("clRuns").checked, stage: !!($("clStage") && $("clStage").checked), old_backups: $("clOld").checked, all_backups: $("clAll").checked, unused_installed: !!($("clInst") && $("clInst").checked)});
+    const list = p.remove.map((e) => `<li><code>${esc(e.path)}</code>${e.kind === "backup" ? " (every file shredded)" : e.kind === "stage" ? " (files shredded)" : e.kind === "installed" && e.path.endsWith(".key") ? " (shredded)" : ""}</li>`).join("");
+    const ok = await confirmDlg("Clean up this appliance?", `<p>Exactly these ${p.remove.length} item(s) will be removed from the appliance:</p><ul class="cleanList">${list}</ul>${p.warning ? `<p class="msg error">${esc(p.warning)}</p>` : ""}`, "Remove them");
+    if (!ok) return;
+    selectTab("run"); logLine("\n── clean up ──\n", "1;35");
+    await api("/api/cleanup", {confirm: p.token});
+  });
+});
+
+/* ---------------- step 1: forget, leave no trace (0.3.17) */
+$("btnForget").onclick = () => guard($("btnForget"), async () => {
+  const host = $("host").value.trim() || (state.settings || {}).host || "";
+  const port = $("port").value.trim();
+  if (!host) throw new Error("Enter the appliance's host first.");
+  const ok = await confirmDlg("Forget this appliance?", `<p>Removes the saved host key for <b>${esc(host)}${port ? ":" + esc(port) : ""}</b> and its saved settings (host, user, FQDN, Morpheus URL…) from this computer. Nothing on the appliance changes.</p>`, "Forget it");
+  if (!ok) return;
+  const r = await api("/api/forget", {host, port});
+  for (const id of ["host", "user", "keyPath", "fqdn", "vAddr", "mUrl"]) $(id).value = "";
+  $("port").value = "22";
+  toast(`Forgot ${host}: ${r.known_hosts_removed} host key line(s) and its saved settings removed.`);
+  await refresh();
+});
+$("optLnt").onchange = () => guard(null, async () => {
+  const r = await api("/api/leave-no-trace", {on: $("optLnt").checked});
+  if (r.leave_no_trace) toast(`Leave no trace: nothing is saved, and ${r.data_dir} is deleted when the app closes.`);
+});
+
+/* ---------------- state */
+async function refresh() {
+  state = await api("/api/state");
+  const t = state.transport;
+  $("dot").className = "dot " + (state.busy ? "busy" : state.connected ? "on" : "");
+  $("chipText").textContent = state.connected ? t.label + (t.sudo_mode ? ` · sudo ${t.sudo_mode}` : "") : "Not connected";
+  $("btnDisconnect").hidden = !state.connected;
+  $("btnPreflight").disabled = !state.connected;
+  if (!state.connected) $("s1").classList.remove("done");
+  const s = state.settings || {};
+  for (const [id, k] of [["host", "host"], ["port", "port"], ["user", "user"], ["keyPath", "key_path"], ["fqdn", "fqdn"], ["vAddr", "connect_addr"], ["mUrl", "morpheus_url"], ["charonDir", "charon_dir"]])
+    if (s[k] && !$(id).value) $(id).value = s[k];
+  if (s.tls_port) $("vPort").value = s.tls_port;
+  $("lntRow").hidden = !state.portable;
+  $("optLnt").checked = !!state.leave_no_trace;
+  if (state.notice) toast(state.notice);
+  renderFacts();
+  if (state.analysis && !$("chainOut").innerHTML) renderChain(state.analysis);
+}
+connectEvents(); refresh().catch((e) => toast(e.message));
+mciVersion().then((v) => { if (v) $("ver").textContent = "v" + v; });
+</script>
+</body>
+</html>

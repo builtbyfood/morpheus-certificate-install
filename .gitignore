@@ -1,0 +1,17 @@
+target/
+node_modules/
+dist-portable/
+src-tauri/gen/
+src-tauri/icons/*.png
+src-tauri/icons/*.ico
+src-tauri/icons/*.icns
+__pycache__/
+*.pyc
+*-morpheus/
+*-morpheus.zip
+src-tauri/icons/android/
+src-tauri/icons/ios/
+
+# Local only, never committed: a machine-specific cargo config (none is needed) and the private-strings list.
+.cargo/config.toml
+.private-denylist

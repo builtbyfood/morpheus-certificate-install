@@ -1,0 +1,25 @@
+# morpheus-certificate-install 0.4.0 — cargo-audit configuration (`cargo audit`).
+
+[advisories]
+ignore = [
+    # RUSTSEC-2023-0071, `rsa` "Marvin Attack": a timing side channel in RSA private-key
+    # operations (decryption/signing) that can leak the key to a network observer. No fixed release
+    # of either version in the tree.
+    # - rsa 0.9 (mci-core): only VERIFIES certificate signatures with public keys (analyze::sig).
+    #   Private keys are parsed and re-encoded as DER, never used to decrypt or sign. Not reachable.
+    # - rsa 0.10.0-rc (russh, via charon-ssh, since 0.3.5): SIGNS once per SSH login when the user
+    #   authenticates with an RSA key file or a default ~/.ssh/id_rsa. Reachable in principle: the
+    #   SSH server sees the signature and its timing, one per connection. No decryption. Accepted
+    #   by Travis on 2026-11-08 (docs/DECISIONS.md): client-side signing once per login, only the
+    #   connected server could time it. ed25519/ECDSA keys don't touch this code.
+    # The ignore is per advisory ID, so it covers both. Revisit when a constant-time rsa is released.
+    "RUSTSEC-2023-0071",
+    # RUSTSEC-2026-0387, crypto-bigint 0.5 "timing variability in operations intended to be
+    # constant-time". Fixed only in crypto-bigint >= 0.7.6, i.e. the der 0.8 / elliptic-curve 0.14
+    # generation, which the R0 stack decision can't take without moving every crypto crate.
+    # Exposure here: elliptic-curve uses it for ECDSA signature VERIFICATION (public data only)
+    # and, in formats/keys.rs, to compute the public point of a SEC1 key that was saved without one
+    # (a one-off local operation with no remote party able to time it). No signing, no ECDH, no
+    # network-facing secret operation. Revisit with the der 0.8 move (DECISIONS.md).
+    "RUSTSEC-2026-0387",
+]

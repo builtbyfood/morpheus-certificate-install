@@ -1,0 +1,38 @@
+Converted by Morpheus Certificate Install {VERSION} on 2026-11-05 12:00
+
+Server certificate : m.cust.test
+  SANs             : m.cust.test, 10.0.0.5
+  valid until      : 2027-12-07
+  SHA-256          : 15:16:D8:FD:E9:EB:86:9A:E8:9C:9A:87:E9:C9:A6:32:D8:04:DF:E6:DE:4C:2B:25:2F:52:0A:06:9D:2A:F5:5E
+Chain              : 1 intermediate(s), root "Cust Root"
+Private key        : RSA 2048, decrypted, PKCS#8 PEM
+
+Converted from:
+  chain.p7b: PEM: PKCS#7 bundle (3)
+  leaf-pkcs1.key: PEM: RSA key (PKCS#1)
+
+m_cust_test.crt holds the server certificate followed by the intermediates — the order nginx needs.
+m_cust_test.key is NOT encrypted (Morpheus requires that). Keep it off shared drives and email.
+
+Manual install (on the Morpheus appliance, after copying these files to your home directory):
+
+  sudo install -o root -g root -m 0600 ~/m_cust_test.crt /etc/morpheus/ssl/m_cust_test.crt
+  sudo install -o root -g root -m 0600 ~/m_cust_test.key /etc/morpheus/ssl/m_cust_test.key
+  sudo cp -a /etc/morpheus/morpheus.rb /etc/morpheus/morpheus.rb.bak-$(date +%Y%m%d-%H%M%S)
+  sudoedit /etc/morpheus/morpheus.rb      # add the two lines from morpheus.rb.snippet
+  sudo morpheus-ctl reconfigure
+  sudo morpheus-ctl restart nginx
+  echo | openssl s_client -connect 127.0.0.1:443 -servername m.cust.test 2>/dev/null | openssl x509 -noout -subject -enddate -fingerprint -sha256
+
+Optional — make Morpheus itself trust this CA (private CAs):
+
+  sudo mkdir -p /etc/morpheus/ssl/trusted_certs
+  sudo install -o root -g root -m 0644 ~/trusted_certs/*.pem /etc/morpheus/ssl/trusted_certs/
+  sudo morpheus-ctl reconfigure
+  KT=$(sudo find /opt/morpheus/embedded -type f -name keytool | head -1)
+  CA=$(sudo find /opt/morpheus/embedded -type f -name cacerts -path '*security*' | head -1)
+  sudo "$KT" -importcert -noprompt -trustcacerts -alias mci-cust-root-f88fb6be -file /etc/morpheus/ssl/trusted_certs/mci-cust-root-f88fb6be.pem -keystore "$CA" -storepass changeit
+  sudo "$KT" -importcert -noprompt -trustcacerts -alias mci-cust-issuing-e1707df2 -file /etc/morpheus/ssl/trusted_certs/mci-cust-issuing-e1707df2.pem -keystore "$CA" -storepass changeit
+  sudo morpheus-ctl restart morpheus-ui     # UI is down while it starts
+
+Or let Morpheus Certificate Install do all of it, with a backup and rollback: python -m morpheus_certificate_install

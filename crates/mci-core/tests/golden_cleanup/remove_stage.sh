@@ -1,0 +1,1 @@
+s="$HOME/.morpheus-certificate-install-stage"; if [ -d "$s" ] && [ ! -L "$s" ]; then find "$s" -type f -exec sh -c 'for f; do shred -u "$f" && echo "shredded $f"; done' sh {} + ; rm -rf -- "$s" && echo "removed $s/"; fi; true

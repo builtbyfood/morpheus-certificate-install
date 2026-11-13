@@ -1,0 +1,62 @@
+# morpheus-certificate-install 0.4.0
+[package]
+name = "mci-core"
+version = "0.4.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Format conversion, chain analysis and appliance command generation for morpheus-certificate-install"
+rust-version = "1.75"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+regex = "1"
+similar = "2"
+thiserror = "1"
+
+# ---- Crypto stack (R0 decision, docs/DECISIONS.md): pure Rust, RustCrypto `der` 0.7 generation ----
+# Every crate below is a stable release; no C toolchain. Stay on one ASN.1 generation (der 0.7)
+# so there is one parser in the binary — don't mix in der 0.8 crates (x509-cert 0.3, pkcs8 0.11, …).
+# ASN.1 / containers
+der = { version = "0.7", features = ["alloc", "oid", "pem"] }
+spki = { version = "0.7", features = ["alloc"] }
+const-oid = "0.9"
+x509-cert = { version = "0.2.5", default-features = false, features = ["std"] }
+# No `cms`: der 0.7 *re-sorts* a SET OF on decode, which re-orders the certificates in an
+# OpenSSL-written .p7b. formats/p7.rs walks `certificates [0]` itself to keep file order.
+# PKCS#12: types + RFC 7292 KDF; the container reader is ours (formats/pfx.rs), see DECISIONS.md.
+pkcs12 = { version = "0.1", features = ["kdf"] }
+# Keys: PKCS#8 (incl. PBES2 decrypt), PKCS#1, SEC1; PBES2 for PFX safes.
+pkcs8 = { version = "0.10", features = ["encryption", "3des", "pem", "std"] }
+# des-insecure / sha1-insecure: decrypt-only support for DES-CBC and the HMAC-SHA1 PRF, which older
+# OpenSSL, Java and Windows exports still use. Nothing is ever encrypted with them.
+pkcs5 = { version = "0.7", features = ["alloc", "pbes2", "3des", "des-insecure", "sha1-insecure"] }
+pkcs1 = { version = "0.7", features = ["std"] }
+sec1 = { version = "0.7", features = ["der", "std"] }
+# Signature verification only (public-key operations). rsa 0.9 carries RUSTSEC-2023-0071
+# (Marvin, a timing side channel in private-key *decryption*); we never decrypt or sign with RSA.
+rsa = { version = "0.9", default-features = false, features = ["std", "sha2"] }
+ecdsa = { version = "0.16", features = ["verifying", "der"] }
+p256 = { version = "0.13", default-features = false, features = ["ecdsa", "pkcs8", "std"] }
+p384 = { version = "0.13", default-features = false, features = ["ecdsa", "pkcs8", "std"] }
+p521 = { version = "0.13", default-features = false, features = ["ecdsa", "pkcs8", "std"] }
+ed25519-dalek = { version = "2", default-features = false, features = ["std", "pkcs8"] }
+# Hashes and ciphers: fingerprints, PKCS#12 MAC/KDF, JKS (SHA-1), legacy PEM (MD5 EVP_BytesToKey).
+sha1 = { version = "0.10", features = ["oid"] }
+sha2 = { version = "0.10", features = ["oid"] }
+md-5 = "0.10"
+hmac = "0.12"
+aes = "0.8"
+des = "0.8"
+rc2 = "0.8"
+cbc = { version = "0.1", features = ["alloc", "block-padding"] }
+# OpenSSH private keys: bcrypt KDF and AES-CTR (ssh-keygen's default cipher).
+bcrypt-pbkdf = { version = "0.10", default-features = false, features = ["alloc"] }
+ctr = "0.9"
+# PBMAC1 PFX integrity (RFC 9579, OpenSSL 3.4+ -pbmac1_pbkdf2); already in the tree via pkcs5.
+pbkdf2 = { version = "0.12", default-features = false, features = ["hmac"] }
+base64 = "0.22"
+# Export .zip, built in memory (no I/O): the key entry gets mode 0600. 9.x clears the extraction advisories.
+zip = { version = "9", default-features = false, features = ["deflate"] }
+# JKS: implemented natively in src/formats/jks.rs (format notes in docs/development/ROUND1.md §R1).
+# Readers for PKCS#12, PKCS#7 and JKS are our own, over src/formats/tlv.rs (bounds-checked, BER-aware).

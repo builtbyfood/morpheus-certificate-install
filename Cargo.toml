@@ -1,0 +1,18 @@
+# morpheus-certificate-install 0.4.0
+[workspace]
+members = ["crates/charon-ssh", "crates/mci-core", "crates/mci-cli", "src-tauri"]
+resolver = "2"
+
+[workspace.dependencies]
+# charon-ssh: a copy of the crate from Charon, kept here (decision D1 = A, 0.3.21). It is charon-ssh
+# 0.1.0 plus docs/charon-ssh-patches 0001–0009. This copy and Charon's must be kept in sync by hand:
+# every change here goes in docs/CHARON-SSH-CHANGES.md (and as a patch in docs/charon-ssh-patches/).
+charon-ssh = { path = "crates/charon-ssh" }
+
+# Profiles only take effect in the workspace root (cargo ignores them in member crates).
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

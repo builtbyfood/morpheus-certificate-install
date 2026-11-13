@@ -1,0 +1,11 @@
+# morpheus-certificate-install 0.3.17 — example for .private-denylist (gitignored, never committed).
+# Copy to .private-denylist and replace these dummy entries with your own; run npm run check-private.
+#   text          matched as is (case-sensitive)
+#   i:text        matched ignoring case
+#   re:pattern    a JavaScript regular expression
+i:corp.example.internal
+my-lab-vm
+re:\bjdoe\b
+re:C:[\/]Users[\/]jdoe
+re:10\.20\.30\.\d+
+jdoe@mail.example

@@ -1,0 +1,30 @@
+{
+  "fqdn": "m.cust.test",
+  "file_base": "m_cust_test",
+  "leaf_cn": "m.cust.test",
+  "sans": [
+    "m.cust.test",
+    "10.0.0.5"
+  ],
+  "not_after": "2027-12-07",
+  "leaf_sha256": "15:16:D8:FD:E9:EB:86:9A:E8:9C:9A:87:E9:C9:A6:32:D8:04:DF:E6:DE:4C:2B:25:2F:52:0A:06:9D:2A:F5:5E",
+  "intermediates": 1,
+  "root_cn": "Cust Root",
+  "key_desc": "RSA 2048",
+  "inputs": [
+    {
+      "name": "chain.p7b",
+      "format": "PEM: PKCS#7 bundle (3)"
+    },
+    {
+      "name": "leaf-pkcs1.key",
+      "format": "PEM: RSA key (PKCS#1)"
+    }
+  ],
+  "ca_aliases": [
+    "mci-cust-root-f88fb6be",
+    "mci-cust-issuing-e1707df2"
+  ],
+  "include_root": false,
+  "now": "2026-11-05 12:00"
+}

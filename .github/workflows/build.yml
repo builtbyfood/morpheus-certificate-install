@@ -1,0 +1,215 @@
+# morpheus-certificate-install 0.4.0
+# test    every push and PR: cargo audit (whole workspace), all tests, the export zip's modes, the UI contract.
+# bundle  Windows (NSIS, portable zip, CLI) and Linux (deb, rpm, AppImage, portable tar.gz, CLI), uploaded as artifacts.
+# macos   per arch (arm64, x64 cross-compiled): the workspace tests, then the .dmg and a CLI tar.gz.
+# release on a tag v*: a DRAFT release with every bundle, the CLI binaries and SHA256SUMS; notes = the
+#         CHANGELOG section for that version. The tag must be "v" + the app's version; a tag with a
+#         "-" (v0.4.0-rc1, from version 0.4.0-rc1) makes a prerelease. Publishing it stays a manual step (docs/RELEASE-CHECKLIST.md).
+# Not here: `npm run check-private` reads the gitignored .private-denylist, which only exists on the
+# maintainer's machine; run it locally before every commit.
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+      - name: Linux deps (webkit2gtk for src-tauri)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
+      - uses: taiki-e/install-action@v2
+        with: { tool: cargo-audit }
+      - name: Audit the whole workspace (Cargo.lock; ignores live in .cargo/audit.toml, each with its reason)
+        run: cargo audit
+      - run: npm ci
+      - name: Icons (generated, gitignored)
+        run: npx tauri icon src-tauri/icons/icon.svg
+      - name: Tests (charon-ssh, mci-core golden + parity, mci-cli, the app's commands; live tests are ignored)
+        run: cargo test --locked --workspace
+      - name: Export zip unpacks with the right modes (Info-ZIP unzip; the key 600)
+        run: |
+          cargo build -q --locked -p mci-cli
+          mkdir -p /tmp/zipcheck && cd /tmp/zipcheck
+          "$GITHUB_WORKSPACE/target/debug/morpheus-certificate-install-cli" convert \
+            "$GITHUB_WORKSPACE/fixtures/corpus/chain.p7b" "$GITHUB_WORKSPACE/fixtures/corpus/leaf-pkcs1.key" --zip
+          umask 022
+          unzip -q m_cust_test-morpheus.zip -d out
+          fail=0
+          while IFS= read -r f; do
+            mode=$(stat -c %a "$f")
+            case "$f" in *.key) want=600 ;; *) want=644 ;; esac
+            echo "$mode $f"
+            [ "$mode" = "$want" ] || { echo "::error::$f is $mode, expected $want"; fail=1; }
+          done < <(find out -type f | sort)
+          [ "$(find out -type f -name '*.key' | wc -l)" = 1 ] || { echo "::error::expected exactly one .key"; fail=1; }
+          exit $fail
+      - name: UI contract (the page + bridge against the Python reference)
+        run: |
+          pip install -r reference/python/requirements.txt pyjks
+          npm run test:ui-contract
+
+  bundle:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, label: windows, bundles: nsis }
+          # 22.04: the oldest supported glibc, so the AppImage and the binaries run on more systems.
+          - { os: ubuntu-22.04, label: linux, bundles: "deb,rpm,appimage" }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+      - name: Linux deps
+        if: matrix.label == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev patchelf rpm
+      - run: npm ci
+      - run: npx tauri icon src-tauri/icons/icon.svg
+      - name: Bundles
+        run: npm run tauri build -- --bundles ${{ matrix.bundles }}
+      - name: Portable (GUI + CLI + portable.flag) and the CLI on its own
+        shell: bash
+        run: |
+          npm run portable
+          mkdir -p out
+          cp dist-portable/*-portable* out/
+          if [ "${{ matrix.label }}" = windows ]; then
+            cp target/release/morpheus-certificate-install-cli.exe out/morpheus-certificate-install-cli-windows-x64.exe
+            cp target/release/bundle/nsis/*.exe out/
+          else
+            cp target/release/morpheus-certificate-install-cli out/morpheus-certificate-install-cli-linux-x64
+            cp target/release/bundle/deb/*.deb target/release/bundle/rpm/*.rpm target/release/bundle/appimage/*.AppImage out/
+          fi
+          # Tauri names bundles after productName ("Morpheus Certificate Install_…"). GitHub turns spaces
+          # in asset names (and other characters, such as an rpm's "~") into dots, which would no longer
+          # match SHA256SUMS, so names keep only letters, digits, ".", "_" and "-" from here on.
+          for f in out/*; do
+            n=$(basename "$f" | sed 's/^Morpheus Certificate Install/morpheus-certificate-install/; s/[^A-Za-z0-9._-]/-/g')
+            [ "$n" = "$(basename "$f")" ] || mv "$f" "out/$n"
+          done
+          ls -l out
+      - name: The CLI runs from the build
+        shell: bash
+        run: |
+          ext=""; [ "${{ matrix.label }}" = windows ] && ext=".exe"
+          ./target/release/morpheus-certificate-install-cli$ext --version
+      - uses: actions/upload-artifact@v5
+        with:
+          name: morpheus-certificate-install-${{ matrix.label }}
+          path: out/*
+          if-no-files-found: error
+
+  # macOS (0.4.0-rc2), as in Charon's workflow: one job per architecture, both on the Apple Silicon
+  # runner (macos-latest); Intel is cross-compiled with --target. Not signed or notarized.
+  # Portable mode doesn't exist on macOS (src-tauri/src/paths.rs), so there's no portable archive.
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: arm64, target: aarch64-apple-darwin }
+          - { arch: x64, target: x86_64-apple-darwin }
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: "${{ matrix.target }}" }
+      - uses: swatinem/rust-cache@v2
+        with: { key: "${{ matrix.target }}" }
+      - run: npm ci
+      - name: Icons (generated, gitignored; icon.icns is the app's icon)
+        run: npx tauri icon src-tauri/icons/icon.svg
+      - name: Tests, natively on the arm64 runner (the click tests are Windows-only; live tests are ignored)
+        run: cargo test --locked --workspace
+      - name: The Intel tests compile (the runner can't be relied on to run x86_64 binaries)
+        if: matrix.arch == 'x64'
+        run: cargo test --locked --workspace --target ${{ matrix.target }} --no-run
+      - name: App and .dmg
+        run: npm run tauri build -- --target ${{ matrix.target }} --bundles app,dmg
+      - name: CLI
+        run: cargo build --release --locked -p mci-cli --target ${{ matrix.target }}
+      - name: Release files (names say the arch, no spaces)
+        run: |
+          set -euo pipefail
+          ver=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          rel="target/${{ matrix.target }}/release"
+          mkdir -p out cli
+          dmgs=( "$rel"/bundle/dmg/*.dmg )
+          [ ${#dmgs[@]} = 1 ] || { echo "::error::expected one .dmg, found ${#dmgs[@]}"; exit 1; }
+          cp "${dmgs[0]}" "out/morpheus-certificate-install_${ver}_macos-${{ matrix.arch }}.dmg"
+          cp "$rel/morpheus-certificate-install-cli" cli/
+          chmod 755 cli/morpheus-certificate-install-cli
+          tar -C cli -czf "out/morpheus-certificate-install-cli-macos-${{ matrix.arch }}.tar.gz" morpheus-certificate-install-cli
+          ls -l out
+      - name: The binaries are for this arch
+        run: |
+          set -euo pipefail
+          want=$([ "${{ matrix.arch }}" = arm64 ] && echo arm64 || echo x86_64)
+          rel="target/${{ matrix.target }}/release"
+          for b in "$rel/morpheus-certificate-install-cli" "$rel"/bundle/macos/*.app/Contents/MacOS/*; do
+            got=$(lipo -archs "$b"); echo "$got  $b"
+            [ "$got" = "$want" ] || { echo "::error::$b is $got, expected $want"; exit 1; }
+          done
+          if [ "${{ matrix.arch }}" = arm64 ]; then "$rel/morpheus-certificate-install-cli" --version; fi
+      - uses: actions/upload-artifact@v5
+        with:
+          name: morpheus-certificate-install-macos-${{ matrix.arch }}
+          path: out/*
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [bundle, macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: The tag matches the app's version
+        run: |
+          want="v$(node -p "require('./src-tauri/tauri.conf.json').version")"
+          [ "$GITHUB_REF_NAME" = "$want" ] || { echo "::error::tag $GITHUB_REF_NAME, but tauri.conf.json says $want"; exit 1; }
+      - uses: actions/download-artifact@v5
+        with: { path: artifacts, merge-multiple: true }
+      - name: SHA256SUMS
+        working-directory: artifacts
+        run: |
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+      - name: Release notes from CHANGELOG.md
+        run: node scripts/release-notes.mjs "$GITHUB_REF_NAME" > notes.md
+      - name: Draft release (a tag with a "-", such as v0.4.0-rc1, is marked as a prerelease)
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          pre=""
+          case "$GITHUB_REF_NAME" in *-*) pre="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" --draft $pre --verify-tag \
+            --title "morpheus-certificate-install ${GITHUB_REF_NAME#v}" --notes-file notes.md artifacts/*

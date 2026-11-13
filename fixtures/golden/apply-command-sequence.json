@@ -1,0 +1,132 @@
+{
+  "note": "Recorded from reference/python apply() with server+trust+restart_ui on chain.p7b + leaf-pkcs1.key (fqdn m.cust.test). put_root data is summarised; secrets and stamped files carry no hash.",
+  "sequence": [
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "\necho \"HOST=$(hostname -f 2>/dev/null || hostname)\"\necho \"OS=$(. /etc/os-release 2>/dev/null; echo \"$PRETTY_NAME\")\"\nMC=$(command -v morpheus-ctl || ls /opt/morpheus/bin/morpheus-ctl /usr/bin/morpheus-ctl 2>/dev/null | head -1)\necho \"MCTL=$MC\"\necho \"RB=$( [ -f /etc/morpheus/morpheus.rb ] && echo yes || echo no )\"\necho \"SSLDIR=$( [ -d /etc/morpheus/ssl ] && echo yes || echo no )\"\necho \"SYSTEMDRUN=$(command -v systemd-run >/dev/null 2>&1 && [ -d /run/systemd/system ] && echo yes || echo no)\"\necho \"OPENSSL=$(command -v openssl >/dev/null && openssl version | cut -d' ' -f1-2)\"\necho \"VER=$(dpkg-query -W -f='${Version}' morpheus-appliance 2>/dev/null || rpm -q --qf '%{VERSION}-%{RELEASE}' morpheus-appliance 2>/dev/null)\"\nKT=$(ls /opt/morpheus/embedded/java/bin/keytool /opt/morpheus/embedded/java/jre/bin/keytool 2>/dev/null | head -1)\n[ -n \"$KT\" ] || KT=$(find /opt/morpheus/embedded -maxdepth 6 -type f -name keytool 2>/dev/null | head -1)\necho \"KEYTOOL=$KT\"\nCA=$(find /opt/morpheus/embedded -maxdepth 8 -type f -name cacerts -path '*security*' 2>/dev/null | head -1)\necho \"CACERTS=$CA\"\necho \"FREE_ETC_KB=$(df -Pk /etc | awk 'NR==2{print $4}')\"\necho \"FREE_VAR_KB=$(df -Pk /var | awk 'NR==2{print $4}')\"\n"
+    },
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "cat /etc/morpheus/morpheus.rb"
+    },
+    {
+      "op": "run",
+      "sudo": false,
+      "cmd": "echo | timeout 10 openssl s_client -connect 127.0.0.1:443  -showcerts 2>/dev/null"
+    },
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "set -e; umask 077; mkdir -p /var/lib/morpheus-certificate-install/backups/{STAMP}; cp -a /etc/morpheus/ssl /var/lib/morpheus-certificate-install/backups/{STAMP}/ssl; cp -a /etc/morpheus/morpheus.rb /var/lib/morpheus-certificate-install/backups/{STAMP}/morpheus.rb; chmod 700 /var/lib/morpheus-certificate-install /var/lib/morpheus-certificate-install/backups 2>/dev/null; echo done"
+    },
+    {
+      "op": "put_root",
+      "path": "/var/lib/morpheus-certificate-install/backups/{STAMP}/manifest.json",
+      "mode": "0600",
+      "dir_mode": "0700",
+      "bytes": 428,
+      "sha256": null
+    },
+    {
+      "op": "put_root",
+      "path": "/etc/morpheus/ssl/m_cust_test.crt",
+      "mode": "0600",
+      "dir_mode": "0700",
+      "bytes": 2449,
+      "sha256": "83df244246ebb93bc011f67d5390c9219dd798b84e5e34b3b68b004af3b5daaf"
+    },
+    {
+      "op": "put_root",
+      "path": "/etc/morpheus/ssl/m_cust_test.key",
+      "mode": "0600",
+      "dir_mode": "0700",
+      "bytes": 1704,
+      "sha256": null
+    },
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "cat /etc/morpheus/morpheus.rb"
+    },
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "stat -c %a /etc/morpheus/morpheus.rb"
+    },
+    {
+      "op": "put_root",
+      "path": "/etc/morpheus/morpheus.rb",
+      "mode": "600",
+      "dir_mode": "0700",
+      "bytes": 367,
+      "sha256": null
+    },
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "a=$(openssl x509 -noout -pubkey -in /etc/morpheus/ssl/m_cust_test.crt | sha256sum | cut -c1-64); b=$(openssl pkey -pubout -in /etc/morpheus/ssl/m_cust_test.key | sha256sum | cut -c1-64); echo \"cert=$a key=$b\"; [ \"$a\" = \"$b\" ]"
+    },
+    {
+      "op": "put_root",
+      "path": "/etc/morpheus/ssl/trusted_certs/mci-cust-root-f88fb6be.pem",
+      "mode": "0644",
+      "dir_mode": "0755",
+      "bytes": 1115,
+      "sha256": "f0ec384e3cf8dd864088d49199d7f44d82e3d739bf27d40c9a4d806c176b0719"
+    },
+    {
+      "op": "put_root",
+      "path": "/etc/morpheus/ssl/trusted_certs/mci-cust-issuing-e1707df2.pem",
+      "mode": "0644",
+      "dir_mode": "0755",
+      "bytes": 1229,
+      "sha256": "c7926b5577c249b8a3dbeedf8f4710d99cc05b238317c9aa84e3870c41ca88a5"
+    },
+    {
+      "op": "put_root",
+      "path": "/var/lib/morpheus-certificate-install/runs/{STAMP}.sh",
+      "mode": "0700",
+      "dir_mode": "0700",
+      "bytes": 2328,
+      "sha256": null
+    },
+    {
+      "op": "run",
+      "sudo": true,
+      "cmd": "systemd-run --unit=morpheus-certificate-install-{STAMP} --collect -p KillMode=process --description='Morpheus Certificate Install {STAMP}' /bin/bash /var/lib/morpheus-certificate-install/runs/{STAMP}.sh"
+    },
+    {
+      "op": "stream_file",
+      "path": "/var/log/morpheus-certificate-install/{STAMP}.log",
+      "rc_path": "/var/log/morpheus-certificate-install/20261105-120000.rc"
+    }
+  ],
+  "rust_expect_override": {
+    "move": {
+      "op": "run",
+      "sudo": true,
+      "cmd": "cat /etc/morpheus/morpheus.rb"
+    },
+    "from_index": 7,
+    "to_index": 3,
+    "insert_after_cmd_prefix": "a=$(openssl x509 -noout -pubkey",
+    "insert": [
+      {
+        "op": "run",
+        "sudo": true,
+        "cmd": "[ -f /var/lib/morpheus-certificate-install/installed.json ] && cat /var/lib/morpheus-certificate-install/installed.json; true"
+      },
+      {
+        "op": "put_root",
+        "path": "/var/lib/morpheus-certificate-install/installed.json",
+        "mode": "0600",
+        "dir_mode": "0700",
+        "bytes": null,
+        "sha256": null
+      }
+    ],
+    "why": "PARITY divergence 19: apply reads morpheus.rb and runs the appliance_url guard before writing anything; divergence 29: after the key match it records the installed files in the ledger (read + write)"
+  }
+}

@@ -1,0 +1,53 @@
+# morpheus-certificate-install 0.4.0
+[package]
+name = "morpheus-certificate-install"
+version = "0.4.0"
+description = "Convert and install CA-signed certificates on an HPE Morpheus appliance"
+authors = ["Travis DeLuca"]
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+name = "mci_app"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+mci-core = { path = "../crates/mci-core" }
+# SSH (exec, stdin, streaming, PTY, host keys). See docs/development/ROUND1.md §R5 for what may need adding to the crate.
+charon-ssh = { workspace = true }
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+anyhow = "1"
+thiserror = "1"
+base64 = "0.22"
+dirs = "5"
+uuid = { version = "1", features = ["v4"] }
+time = { version = "0.3", features = ["formatting", "local-offset", "macros"] }
+# Morpheus API, AIA fetch, Charon MCP (localhost HTTP): one client, rustls only.
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "blocking"] }
+# Local TLS verification (step 4): fingerprint with a no-verify pass, then a real verify against webpki roots + the supplied root.
+# The `ring` provider (as charon-ssh and reqwest use); aws-lc-rs is left out (needs NASM on Windows).
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+webpki-roots = "0.26"
+# The OS certificate store, through the OS's own chain building (Windows fetches missing roots then),
+# after the supplied root and before the built-in roots (0.3.16).
+rustls-platform-verifier = "0.6"
+# The OS store's certificates as a list, for the "Trust this CA" default (src/trust.rs, 0.3.17).
+rustls-native-certs = "0.8"
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
+# Charon saved hosts (read-only)
+rusqlite = { version = "0.32", features = ["bundled"] }
+# Export .zip: built by mci_core::export::to_zip (key entry 0600, made-by-Unix); no zip dependency here.
+
+[dev-dependencies]
+# tauri::test (MockRuntime): the commands and their events, driven without a window.
+tauri = { version = "2", features = ["test"] }
+
+# Release profile: see the workspace Cargo.toml (cargo ignores profiles in member crates).

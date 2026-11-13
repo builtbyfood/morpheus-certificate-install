@@ -1,0 +1,22 @@
+# morpheus-certificate-install 0.4.0
+[package]
+name = "mci-cli"
+version = "0.4.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Command-line converter for morpheus-certificate-install (ships beside the GUI exe in the portable zip)"
+rust-version = "1.75"
+
+[[bin]]
+name = "morpheus-certificate-install-cli"
+path = "src/main.rs"
+
+[dependencies]
+mci-core = { path = "../mci-core" }
+# --ask: prompts without echo.
+rpassword = "7"
+# --fetch-chain: a small blocking HTTP client (rustls; no cookies, no proxy from the environment).
+# The contract it keeps is on mci_core::aia::Fetch (src/fetch.rs).
+ureq = { version = "2", default-features = false, features = ["tls"] }
+# Local time for INSTALL.txt line 1 and the zip entries' timestamps, as the reference's datetime.now().
+time = { version = "0.3", features = ["local-offset"] }

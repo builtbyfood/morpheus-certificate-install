@@ -1,0 +1,32 @@
+{
+  "note": "Exact strings the Python transports send. ssh_* entries are the full exec line (after sudo wrapping); charon_* entries are prefixed with the MCP tool name. Charon put_root uses a timestamped stage name, so it is described in docs/PARITY.md instead.",
+  "commands": {
+    "ssh_put_root": [
+      "sudo -n bash -c 'set -e; umask 077; d=$(dirname /etc/morpheus/ssl/m_cust_test.key); [ -d \"$d\" ] || { mkdir -p \"$d\"; chmod 0700 \"$d\"; }; cat > /etc/morpheus/ssl/m_cust_test.key.mci-tmp; chown root:root /etc/morpheus/ssl/m_cust_test.key.mci-tmp; chmod 0600 /etc/morpheus/ssl/m_cust_test.key.mci-tmp; mv -f /etc/morpheus/ssl/m_cust_test.key.mci-tmp /etc/morpheus/ssl/m_cust_test.key'"
+    ],
+    "ssh_put_root_trust": [
+      "sudo -n bash -c 'set -e; umask 077; d=$(dirname /etc/morpheus/ssl/trusted_certs/a.pem); [ -d \"$d\" ] || { mkdir -p \"$d\"; chmod 0755 \"$d\"; }; cat > /etc/morpheus/ssl/trusted_certs/a.pem.mci-tmp; chown root:root /etc/morpheus/ssl/trusted_certs/a.pem.mci-tmp; chmod 0644 /etc/morpheus/ssl/trusted_certs/a.pem.mci-tmp; mv -f /etc/morpheus/ssl/trusted_certs/a.pem.mci-tmp /etc/morpheus/ssl/trusted_certs/a.pem'"
+    ],
+    "ssh_stream_file": [
+      "bash -c 'f=/var/log/morpheus-certificate-install/R.log; r=/var/log/morpheus-certificate-install/R.rc; i=0; while [ ! -e \"$f\" ] && [ $i -lt 30 ]; do sleep 1; i=$((i+1)); done; tail -n +1 -F \"$f\" 2>/dev/null & T=$!; while [ ! -s \"$r\" ]; do sleep 1; done; sleep 2; kill $T 2>/dev/null; wait $T 2>/dev/null; echo; echo \"@@RC=$(cat \"$r\")\"'"
+    ],
+    "ssh_sudo_wrap_nopasswd": [
+      "sudo -n bash -c 'id -un'"
+    ],
+    "ssh_sudo_wrap_password": [
+      "sudo -k -S -p '' bash -c 'id -un'"
+    ],
+    "list_runs": [
+      "sudo -k -S -p '' bash -c 'cd /var/log/morpheus-certificate-install 2>/dev/null && for f in *.log; do [ -e \"$f\" ] || continue; r=${f%.log}; echo \"$r|$(stat -c %Y \"$f\")|$(cat \"$r.rc\" 2>/dev/null)\"; done'"
+    ],
+    "list_backups": [
+      "sudo -k -S -p '' bash -c 'cd /var/lib/morpheus-certificate-install/backups 2>/dev/null && for d in */; do d=${d%/}; echo \"@@B $d\"; cat \"$d/manifest.json\" 2>/dev/null; echo; done'"
+    ],
+    "charon_sudo_wrap": [
+      "[run_command] sudo bash -c 'id -un'"
+    ],
+    "charon_poll_first": [
+      "[run_command] bash -c 'f=/var/log/morpheus-certificate-install/R.log; r=/var/log/morpheus-certificate-install/R.rc; s=$(stat -c %s \"$f\" 2>/dev/null || echo 0); echo \"SIZE=$s\"; echo \"RC=$(cat \"$r\" 2>/dev/null)\"; [ \"$s\" -gt 0 ] && tail -c +1 \"$f\" | head -c $(( s - 0 > 262144 ? 262144 : s - 0 )) | base64 -w0; echo'"
+    ]
+  }
+}
