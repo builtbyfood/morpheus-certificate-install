@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — reads from the appliance whose output is data.
+//! morpheus-certificate-install 0.4.1 — reads from the appliance whose output is data.
 //!
 //! Every one goes through `Transport::run_data`, so only the command's **stdout** is parsed.
 //! Anything on stderr — sudo's first-use lecture (the fake appliance keeps it on purpose),

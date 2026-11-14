@@ -1,4 +1,4 @@
-# morpheus-certificate-install 0.4.0 — cargo-audit configuration (`cargo audit`).
+# morpheus-certificate-install 0.4.1 — cargo-audit configuration (`cargo audit`).
 
 [advisories]
 ignore = [

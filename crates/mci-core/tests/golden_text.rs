@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the ported text is byte-identical to the Python reference.
+//! morpheus-certificate-install 0.4.1 — the ported text is byte-identical to the Python reference.
 //! Goldens: fixtures/golden/ (regenerate with `python3 fixtures/make-cases.py`). Passes from day one.
 
 use mci_core::appliance::{self as a, SudoMode};

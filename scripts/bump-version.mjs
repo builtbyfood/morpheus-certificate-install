@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.0 — one version everywhere. src-tauri/tauri.conf.json is canonical.
+// morpheus-certificate-install 0.4.1 — one version everywhere. src-tauri/tauri.conf.json is canonical.
 //   node scripts/bump-version.mjs          # propagate tauri.conf.json's version
 //   node scripts/bump-version.mjs 0.3.1    # set it everywhere (npm run bump -- 0.3.1)
 // Updates: tauri.conf.json, package.json, every Cargo.toml [package] version, Cargo.lock, and the

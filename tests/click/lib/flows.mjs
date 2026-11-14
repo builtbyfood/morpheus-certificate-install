@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — steps several suites click through the same way.
+// morpheus-certificate-install 0.4.1 — steps several suites click through the same way.
 import { join } from "node:path";
 import { CORPUS } from "./app.mjs";
 import { eq, ok } from "./assert.mjs";

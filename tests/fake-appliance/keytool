@@ -1,0 +1,36 @@
+#!/bin/bash
+# morpheus-certificate-install 0.4.1 — test stand-in for keytool, with state like a real keystore:
+# the aliases are kept in /var/lib/fake-morpheus/keytool-aliases (one per line).
+#   -importcert  adds the alias; fails (exit 1) if it already exists, as keytool does
+#   -delete      removes the alias (exit 0); fails (exit 1) if it doesn't exist, as keytool does
+#   -list        with -alias: exit 0 if present, 1 if not; without: every alias
+# Every call is logged (store password masked) to /var/log/fake-morpheus/keytool.log.
+STATE=${FAKE_KEYTOOL_STATE:-/var/lib/fake-morpheus/keytool-aliases}
+LOG=${FAKE_KEYTOOL_LOG:-/var/log/fake-morpheus/keytool.log}   # both overridable for testing the stub itself
+mkdir -p "$(dirname "$STATE")" "$(dirname "$LOG")" && touch "$STATE"
+echo "$(date -u +%FT%TZ) $*" | sed 's/-storepass [^ ]*/-storepass ***/' >> "$LOG"
+op=""; alias=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -alias) alias="${2:-}"; shift ;;
+    -importcert|-import|-delete|-list) op="$1" ;;
+  esac
+  shift
+done
+has() { grep -qxF -- "$alias" "$STATE"; }
+case "$op" in
+  -importcert|-import)
+    [ -n "$alias" ] || { echo "keytool error: java.lang.Exception: -alias is required"; exit 1; }
+    if has; then echo "keytool error: java.lang.Exception: Certificate not imported, alias <$alias> already exists"; exit 1; fi
+    echo "$alias" >> "$STATE"; echo "Certificate was added to keystore" ;;
+  -delete)
+    if ! has; then echo "keytool error: java.lang.Exception: Alias <$alias> does not exist"; exit 1; fi
+    grep -vxF -- "$alias" "$STATE" > "$STATE.new" || true; mv -f "$STATE.new" "$STATE" ;;
+  -list)
+    if [ -n "$alias" ]; then
+      has && { echo "$alias, $(date +'%b %d, %Y'), trustedCertEntry,"; exit 0; }
+      echo "keytool error: java.lang.Exception: Alias <$alias> does not exist"; exit 1
+    fi
+    echo "Your keystore contains $(grep -c . "$STATE") entries"; cat "$STATE" ;;
+  *) echo "fake keytool: unsupported command line"; exit 2 ;;
+esac

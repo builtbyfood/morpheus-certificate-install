@@ -1,5 +1,5 @@
-# morpheus-certificate-install 0.4.0
-# test    every push and PR: cargo audit (whole workspace), all tests, the export zip's modes, the UI contract.
+# morpheus-certificate-install 0.4.1
+# test    every push and PR: cargo audit (whole workspace), the Markdown links, all tests, the export zip's modes, the UI contract.
 # bundle  Windows (NSIS, portable zip, CLI) and Linux (deb, rpm, AppImage, portable tar.gz, CLI), uploaded as artifacts.
 # macos   per arch (arm64, x64 cross-compiled): the workspace tests, then the .dmg and a CLI tar.gz.
 # release on a tag v*: a DRAFT release with every bundle, the CLI binaries and SHA256SUMS; notes = the
@@ -38,6 +38,12 @@ jobs:
         with: { tool: cargo-audit }
       - name: Audit the whole workspace (Cargo.lock; ignores live in .cargo/audit.toml, each with its reason)
         run: cargo audit
+      - name: Links in every published Markdown file resolve (relative paths and #anchors)
+        run: |
+          node scripts/check-links.mjs --self-test
+          node scripts/check-links.mjs
+      - name: .gitattributes covers every file, and git stores every text file LF (core.autocrlf=true)
+        run: node scripts/check-gitattributes.mjs --git
       - run: npm ci
       - name: Icons (generated, gitignored)
         run: npx tauri icon src-tauri/icons/icon.svg

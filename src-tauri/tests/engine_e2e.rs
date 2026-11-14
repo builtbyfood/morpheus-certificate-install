@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the engine end to end against the fake appliance (R7; moved
+//! morpheus-certificate-install 0.4.1 — the engine end to end against the fake appliance (R7; moved
 //! here from R8). Drives the app's commands (tauri MockRuntime, no window, no UI) — connect,
 //! preflight, analyze, plan, apply, verify, runs, backups, rollback, the Morpheus API check — and
 //! checks the appliance afterwards through a separate SSH connection (the "reference").
@@ -230,7 +230,7 @@ fn engine_end_to_end() {
         r.sudo("rm -f /var/lib/fake-morpheus/appliance-url");
         say("Morpheus API: whoami, appliance-settings GET and PUT with the test token; a wrong token gets 401");
 
-        // ---- permissions (CLAUDE.md)
+        // ---- permissions (SECURITY.md → What it writes on an appliance)
         let bdir = format!("{BACKUP_DIR}/{first_stamp}");
         let want = [
             (CRT.to_string(), "600 root:root"), (KEY.to_string(), "600 root:root"), (MORPHEUS_RB.to_string(), "600 root:root"),

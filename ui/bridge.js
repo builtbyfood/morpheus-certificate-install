@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — Tauri bridge for ui/index.html.
+// morpheus-certificate-install 0.4.1 — Tauri bridge for ui/index.html.
 // The page was written against the Python app's HTTP API; this maps each route to a Tauri command
 // with the same request/response bodies, and the SSE stream to the "mci" event channel.
 "use strict";

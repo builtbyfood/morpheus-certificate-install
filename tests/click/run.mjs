@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.0 — click tests: the real app (debug build), driven over CDP.
+// morpheus-certificate-install 0.4.1 — click tests: the real app (debug build), driven over CDP.
 //   npm run test:click                       every suite (fake-VM ones skip without MCI_TEST_SSH)
 //   npm run test:click -- convert wildcard   only these suites (names or name prefixes)
 //   MCI_TEST_SSH=<vm>:2222:mcitest:hunter2 npm run test:click

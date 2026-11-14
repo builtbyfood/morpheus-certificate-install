@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — the real app (debug build) in its own portable folder,
+// morpheus-certificate-install 0.4.1 — the real app (debug build) in its own portable folder,
 // driven over CDP. Every suite gets a fresh folder: <tmp>/mci-click-<pid>/<suite>/app/ holds a copy
 // of the debug exe and portable.flag, so settings, known_hosts and the webview profile all land in
 // that folder's data/ and no two suites share them.

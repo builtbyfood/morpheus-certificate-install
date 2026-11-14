@@ -1,8 +1,8 @@
-//! morpheus-certificate-install 0.4.0 — core library (no Tauri, no I/O except AIA fetch via a caller-supplied closure).
+//! morpheus-certificate-install 0.4.1 — core library (no Tauri, no I/O except AIA fetch via a caller-supplied closure).
 //!
 //! Ported and golden-tested from the Python reference (reference/python, 0.2.1):
 //!   quote, names, morpheus_rb, runner, appliance, export::install_text
-//! Typed API, bodies are `todo!()` until Round 1 (docs/development/ROUND1.md):
+//! Ported from the reference too, checked by the parity tests (tests/parity.rs):
 //!   formats (read anything a CA sends), analyze (chain + checks), aia (complete chain), export::build_files
 
 pub mod quote;

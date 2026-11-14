@@ -1,4 +1,4 @@
-# Security policy — morpheus-certificate-install 0.4.0
+# Security policy — morpheus-certificate-install 0.4.1
 
 ## Reporting a vulnerability
 

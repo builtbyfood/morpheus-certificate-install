@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the `/etc/morpheus/morpheus.rb` edit. Byte-identical to the reference.
+//! morpheus-certificate-install 0.4.1 — the `/etc/morpheus/morpheus.rb` edit. Byte-identical to the reference.
 
 use regex::Regex;
 

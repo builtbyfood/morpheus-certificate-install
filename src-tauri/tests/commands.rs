@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the Tauri commands on tauri's MockRuntime (R7): request and
+//! morpheus-certificate-install 0.4.1 — the Tauri commands on tauri's MockRuntime (R7): request and
 //! response bodies as the Python /api/* routes, the events they emit on `mci`, jobs, settings.
 //! No window and no appliance; `verify` runs against a TLS server started here.
 //!   cargo test -p morpheus-certificate-install --test commands

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — how commands reach the appliance.
+//! morpheus-certificate-install 0.4.1 — how commands reach the appliance.
 //!
 //! Two implementations, same surface as the Python reference's Transport:
 //!   ssh.rs        — own SSH via the charon-ssh crate (host-key TOFU, sudo detection, PTY shell)

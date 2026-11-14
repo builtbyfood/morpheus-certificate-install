@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — complete a chain from AIA "CA Issuers" URLs. **Round 1, R3.**
+//! morpheus-certificate-install 0.4.1 — complete a chain from AIA "CA Issuers" URLs. **Round 1, R3.**
 //!
 //! Port of reference certs.complete_chain(): from the top of the current chain, follow its CA Issuers
 //! URLs, at most [`MAX_HOPS`] times, stopping as soon as a hop adds nothing new (so a certificate

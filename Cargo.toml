@@ -1,4 +1,4 @@
-# morpheus-certificate-install 0.4.0
+# morpheus-certificate-install 0.4.1
 [workspace]
 members = ["crates/charon-ssh", "crates/mci-core", "crates/mci-cli", "src-tauri"]
 resolver = "2"

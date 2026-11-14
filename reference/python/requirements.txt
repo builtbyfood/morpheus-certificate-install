@@ -1,0 +1,5 @@
+# Morpheus Certificate Install 0.2.1
+paramiko>=3.4
+cryptography>=42
+# optional: read Java keystores (.jks / .jceks)
+pyjks>=20.0

@@ -1,4 +1,4 @@
-# Contributing — morpheus-certificate-install 0.4.0
+# Contributing — morpheus-certificate-install 0.4.1
 
 Bug reports and pull requests are welcome. Please open an issue before a large change, so we can agree on the approach first. Security problems go through [SECURITY.md](SECURITY.md), not an issue.
 
@@ -33,16 +33,18 @@ Start with `npm ci` and `npx tauri icon src-tauri/icons/icon.svg` (the generated
 | Click tests: the real app, driven through its page | `npm run test:click` | Windows (WebView2 over CDP); [tests/click/README.md](tests/click/README.md) |
 | Portable build smoke test | `npm run portable`, then `npm run portable-smoke` | a desktop session |
 | Fresh clone builds | `npm run fresh-clone-check` | network for `npm ci` and crates |
+| Links in the Markdown files resolve (CI runs it too) | `npm run check-links` | nothing |
+| Every text file is LF in git; .gitattributes names every text type (CI runs it too) | `npm run check-gitattributes` | git |
 | SSH transport, live | `cargo test -p morpheus-certificate-install --test ssh_fake_appliance ssh_transport_against_the_fake_appliance -- --ignored --nocapture` | `MCI_TEST_SSH` |
 | The whole engine, live | `cargo test -p morpheus-certificate-install --test engine_e2e -- --ignored --nocapture` | `MCI_TEST_SSH` |
 | Click tests against the VM | `npm run test:click` | `MCI_TEST_SSH` (adds the install, host-key and cleanup suites) |
 | Charon transport vs a mock | `cargo test -p morpheus-certificate-install --test charon_mock -- --ignored --nocapture` | `MCI_TEST_SSH`, and `MCI_PYTHON` with paramiko |
 
-`MCI_TEST_SSH` is `host:port:user:password` for your fake appliance, for example `192.0.2.10:2222:mcitest:hunter2`. In PowerShell, set it with `$env:MCI_TEST_SSH = "192.0.2.10:2222:mcitest:hunter2"`.
+`MCI_TEST_SSH` is `host:port:user:password` for your fake appliance (a disposable VM, never a real appliance), for example `192.0.2.10:2222:mcitest:hunter2`. In PowerShell, set it with `$env:MCI_TEST_SSH = "192.0.2.10:2222:mcitest:hunter2"`.
 
 **Don't run `ssh_fake_appliance` unfiltered without meaning to.** Its host-key rotation test changes the VM's host key for good, so it only runs with `MCI_TEST_ROTATE=1`.
 
-Live tests through a real Charon session (`charon_live`, `engine_e2e` with `MCI_TEST_E2E_CHARON`) drive whatever that session is connected to. Only point them at a fake appliance.
+Live tests install certificates, run `morpheus-ctl`, and delete what they wrote, on the machine they're pointed at. Through a real Charon session (`charon_live`, `engine_e2e` with `MCI_TEST_E2E_CHARON`), they drive whatever that session is connected to. Only point any of them at a fake appliance.
 
 ## Versions
 

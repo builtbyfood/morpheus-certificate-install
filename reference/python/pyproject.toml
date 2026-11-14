@@ -1,0 +1,30 @@
+# morpheus-certificate-install 0.2.1
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "morpheus-certificate-install"
+version = "0.2.1"
+description = "Convert and install CA-signed certificates on an HPE Morpheus appliance — GUI with live SSH, Charon bridge, backup and rollback"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [{name = "Travis DeLuca"}]
+requires-python = ">=3.9"
+dependencies = ["paramiko>=3.4", "cryptography>=42"]
+
+[project.optional-dependencies]
+jks = ["pyjks>=20.0"]
+test = ["pytest>=7", "pyjks>=20.0"]
+
+[project.scripts]
+morpheus-certificate-install = "morpheus_certificate_install.app:main"
+
+[project.urls]
+Homepage = "https://github.com/builtbyfood/morpheus-certificate-install"
+
+[tool.setuptools]
+packages = ["morpheus_certificate_install"]
+
+[tool.setuptools.package-data]
+morpheus_certificate_install = ["web/*.html", "web/vendor/*"]

@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — "Clean up this appliance" from the page, with its
+// morpheus-certificate-install 0.4.1 — "Clean up this appliance" from the page, with its
 // defaults, while a run is still going: a runner-shaped run that sleeps (started over the
 // reference connection) keeps its script and log; finished runs go; the newest backup stays.
 import { freshFolder, launch } from "../lib/app.mjs";

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the app's AIA getter for fetch_chain (blocking; call it
+//! morpheus-certificate-install 0.4.1 — the app's AIA getter for fetch_chain (blocking; call it
 //! from `spawn_blocking`).
 //!
 //! The same contract as the CLI's (crates/mci-cli/src/fetch.rs), documented on

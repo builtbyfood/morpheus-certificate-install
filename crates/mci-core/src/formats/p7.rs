@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — certificates out of a PKCS#7 / CMS SignedData (.p7b, .p7c).
+//! morpheus-certificate-install 0.4.1 — certificates out of a PKCS#7 / CMS SignedData (.p7b, .p7c).
 //!
 //! Walks ContentInfo → [0] → SignedData → `certificates [0] IMPLICIT` element by element, so the
 //! certificates come back in the order the file holds them (what the reference returns; der 0.7's

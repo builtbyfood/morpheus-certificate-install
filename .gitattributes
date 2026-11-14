@@ -1,17 +1,56 @@
-# morpheus-certificate-install — line endings. Fixtures are byte-exact (goldens compare bytes; win.cer
-# deliberately has CRLF), so git must never convert them. Source is LF everywhere, on every OS.
-# One pattern per line: git doesn't accept several patterns on one line.
-fixtures/** -text
-crates/mci-core/src/formats/testdata/** -text
-*.sh text eol=lf
-tests/fake-appliance/* text eol=lf
+# morpheus-certificate-install — line endings. Source is LF in the repository and in every checkout, on
+# every OS, whatever core.autocrlf says. Fixtures are byte-exact (goldens compare bytes; win.cer
+# deliberately has CRLF), so git must never convert them.
+# One pattern per line (git doesn't accept several on one line). For each attribute the LAST matching
+# line wins, so the byte-exact folders come last.
+# scripts/check-gitattributes.mjs (CI, and export-tree) fails if a text file in the tree isn't covered by
+# an explicit `text eol=lf` line below, if a binary file is marked text, or if a text file holds CRLF.
+# A new kind of text file therefore needs its line here.
+
+# Default for anything not listed: let git decide, and use LF for what it finds to be text.
+* text=auto eol=lf
+
+# Text: source, scripts, docs, data, certificates in PEM.
 *.rs text eol=lf
 *.toml text eol=lf
+*.lock text eol=lf
 *.md text eol=lf
 *.json text eol=lf
 *.js text eol=lf
 *.cjs text eol=lf
 *.mjs text eol=lf
 *.html text eol=lf
+*.css text eol=lf
+*.svg text eol=lf
+*.xml text eol=lf
 *.yml text eol=lf
+*.yaml text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.txt text eol=lf
+*.pem text eol=lf
+*.patch text eol=lf
 .gitattributes text eol=lf
+.gitignore text eol=lf
+.private-denylist.example text eol=lf
+LICENSE text eol=lf
+NOTICE text eol=lf
+tests/fake-appliance/keytool text eol=lf
+tests/fake-appliance/morpheus-ctl text eol=lf
+tests/fake-appliance/rotate-host-keys text eol=lf
+
+# Binary: never converted, never diffed as text.
+*.png binary
+*.ico binary
+*.icns binary
+*.der binary
+*.cer binary
+*.pfx binary
+*.p12 binary
+*.jks binary
+*.p7c binary
+*.pvk binary
+
+# Byte-exact test data (last, so it wins over the lines above).
+fixtures/** -text
+crates/mci-core/src/formats/testdata/** -text

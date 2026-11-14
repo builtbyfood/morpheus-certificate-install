@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.0 — does a fresh clone build? (npm run fresh-clone-check)
+// morpheus-certificate-install 0.4.1 — does a fresh clone build? (npm run fresh-clone-check)
 // Copies the tracked files (scripts/tracked-files.mjs: no target/, node_modules/, .cargo/config.toml,
 // generated icons or other gitignored files) to a new temp folder, then runs there what a fresh
 // checkout needs, as README → Build says:
@@ -13,12 +13,12 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { trackedFiles } from "./tracked-files.mjs";
+import { publishedFiles } from "./tracked-files.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const keep = process.argv.includes("--keep");
 const dir = mkdtempSync(join(tmpdir(), "mci-fresh-clone-"));
-const files = trackedFiles(root, (rel) => rel === ".private-denylist" || rel === ".cargo/config.toml");
+const files = publishedFiles(root);
 for (const rel of files) {
   mkdirSync(dirname(join(dir, rel)), { recursive: true });
   cpSync(join(root, rel), join(dir, rel));

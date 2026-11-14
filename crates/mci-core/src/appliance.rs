@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — every shell string sent to the appliance.
+//! morpheus-certificate-install 0.4.1 — every shell string sent to the appliance.
 //!
 //! The transports (src-tauri) only wrap these for sudo and send them; nothing else builds
 //! shell text. All of it is byte-identical to the Python reference — see tests/golden_text.rs.

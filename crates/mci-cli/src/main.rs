@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — `morpheus-certificate-install-cli convert …`
+//! morpheus-certificate-install 0.4.1 — `morpheus-certificate-install-cli convert …`
 //!
 //! Same behaviour and output as the Python reference's `convert` subcommand (reference/python app.convert_main):
 //!   convert FILE... [--fqdn X] [--out DIR | --zip] [--include-root] [--fetch-chain] [--ask]

@@ -1,4 +1,4 @@
-<!-- morpheus-certificate-install 0.4.0 — Tauri's default Windows app manifest (comctl32 v6), embedded by build.rs into every binary of this package, test binaries included. -->
+<!-- morpheus-certificate-install 0.4.1 — Tauri's default Windows app manifest (comctl32 v6), embedded by build.rs into every binary of this package, test binaries included. -->
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
   <dependency>
     <dependentAssembly>

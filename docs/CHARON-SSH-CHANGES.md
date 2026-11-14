@@ -1,4 +1,4 @@
-# charon-ssh changes — morpheus-certificate-install 0.4.0
+# charon-ssh changes — morpheus-certificate-install 0.4.1
 
 > **This repository carries its own copy of `charon-ssh`** in `crates/charon-ssh` (decision D1 = A, 0.3.21). It is charon-ssh 0.1.0 (`e9f97f5`) plus the patches 0001–0009 below, and was copied from Travis's local publish repo (the same code as the rev `e7f7fd1` the workspace used to pin, with one test's user name made generic).
 >

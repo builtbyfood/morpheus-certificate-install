@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.0 — print CHANGELOG.md's section for one version (the release
+// morpheus-certificate-install 0.4.1 — print CHANGELOG.md's section for one version (the release
 // notes). `node scripts/release-notes.mjs 0.4.0` (or v0.4.0). Exit 1 if the section is missing.
 // The notes stop at the next "## " heading, or earlier at a line `<!-- end of release notes -->`, below
 // which a section can keep notes for the maintainers (0.4.0-rc1).

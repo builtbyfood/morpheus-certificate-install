@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.0 — smoke-test the portable build (npm run portable-smoke).
+// morpheus-certificate-install 0.4.1 — smoke-test the portable build (npm run portable-smoke).
 // Run `npm run portable` first. Windows: dist-portable/…-windows-portable.zip; Linux: the tar.gz.
 //
 //  1. Unpack it into a new temp folder.

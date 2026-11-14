@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — a public CA leaves "Trust this CA" unticked, with the
+// morpheus-certificate-install 0.4.1 — a public CA leaves "Trust this CA" unticked, with the
 // "Publicly trusted" reason (PARITY 28). The private corpus chain first (ticked), then, after Clear
 // files, a leaf-less analysis of the real Go Daddy G2 root (src-tauri/testdata/public-roots/).
 import { join } from "node:path";

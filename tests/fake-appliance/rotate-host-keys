@@ -1,0 +1,19 @@
+#!/bin/bash
+# morpheus-certificate-install 0.4.1 — give the fake appliance new SSH host keys (run as root).
+# Clients that trusted the old key must now refuse to connect: "HOST KEY CHANGED".
+# Only sshd's listener restarts; SSH sessions already open stay up.
+# The VM's own keys in /etc/ssh; `systemctl restart ssh` (sessions are left alone).
+set -eu
+[ "$(id -u)" = 0 ] || { echo "rotate-host-keys must run as root (sudo rotate-host-keys)"; exit 1; }
+dir=/etc/ssh
+for t in ed25519 ecdsa rsa; do
+  f=$dir/ssh_host_${t}_key
+  rm -f "$f" "$f.pub"
+  ssh-keygen -q -t "$t" -N '' -C "mci-fake-appliance" -f "$f"
+  chmod 600 "$f"
+done
+ssh-keygen -lf "$dir/ssh_host_ed25519_key.pub"
+# Ubuntu 24.04 and later start sshd from ssh.socket; restarting the service makes the next connection
+# use the new keys. KillMode=process in ssh.service keeps existing sessions.
+systemctl restart ssh.service 2>/dev/null || systemctl restart ssh 2>/dev/null || systemctl restart sshd
+echo "host keys rotated; sshd restarted with the new keys"

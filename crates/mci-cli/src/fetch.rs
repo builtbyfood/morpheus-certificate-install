@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the CLI's `--fetch-chain` HTTP getter.
+//! morpheus-certificate-install 0.4.1 — the CLI's `--fetch-chain` HTTP getter.
 //!
 //! Keeps the contract documented on `mci_core::aia::Fetch`: http/https only, 10 s timeout for the
 //! whole request, a 1 MiB body cap, at most 3 redirects, no cookies, no credentials, no proxy taken
