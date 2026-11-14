@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — bounds-checked ASN.1 TLV reader.
+//! morpheus-certificate-install 0.4.2 — bounds-checked ASN.1 TLV reader.
 //!
 //! The PKCS#7, PKCS#12 and JKS readers walk structures with this instead of typed decoders so that
 //! (a) the order of a SET OF is kept as written (der 0.7 re-sorts it), and (b) BER from Windows and

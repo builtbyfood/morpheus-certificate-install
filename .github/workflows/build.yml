@@ -1,10 +1,10 @@
-# morpheus-certificate-install 0.4.1
+# morpheus-certificate-install 0.4.2
 # test    every push and PR: cargo audit (whole workspace), the Markdown links, all tests, the export zip's modes, the UI contract.
 # bundle  Windows (NSIS, portable zip, CLI) and Linux (deb, rpm, AppImage, portable tar.gz, CLI), uploaded as artifacts.
 # macos   per arch (arm64, x64 cross-compiled): the workspace tests, then the .dmg and a CLI tar.gz.
 # release on a tag v*: a DRAFT release with every bundle, the CLI binaries and SHA256SUMS; notes = the
 #         CHANGELOG section for that version. The tag must be "v" + the app's version; a tag with a
-#         "-" (v0.4.0-rc1, from version 0.4.0-rc1) makes a prerelease. Publishing it stays a manual step (docs/RELEASE-CHECKLIST.md).
+#         "-" (v0.4.0-rc1, from version 0.4.0-rc1) makes a prerelease. Publishing it stays a manual step for the maintainer.
 # Not here: `npm run check-private` reads the gitignored .private-denylist, which only exists on the
 # maintainer's machine; run it locally before every commit.
 name: build
@@ -47,7 +47,7 @@ jobs:
       - run: npm ci
       - name: Icons (generated, gitignored)
         run: npx tauri icon src-tauri/icons/icon.svg
-      - name: Tests (charon-ssh, mci-core golden + parity, mci-cli, the app's commands; live tests are ignored)
+      - name: Tests (mci-core golden + parity, mci-cli, the app's commands; live tests are ignored)
         run: cargo test --locked --workspace
       - name: Export zip unpacks with the right modes (Info-ZIP unzip; the key 600)
         run: |

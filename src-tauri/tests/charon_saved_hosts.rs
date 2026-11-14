@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — Charon's saved hosts from charon.db, offline (no Charon, no
+//! morpheus-certificate-install 0.4.2 — Charon's saved hosts from charon.db, offline (no Charon, no
 //! appliance), so it runs everywhere CI does. Added with the rusqlite 0.42 upgrade (RUSTSEC-2026-0459):
 //! - only ssh nodes with a host come out, with user/port/tags inherited down the folder tree;
 //! - no credential is ever read (it isn't even selected; the secrets below must not appear);

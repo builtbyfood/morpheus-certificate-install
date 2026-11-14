@@ -1,4 +1,4 @@
-# Parity with the Python reference — morpheus-certificate-install 0.4.1
+# Parity with the Python reference — morpheus-certificate-install 0.4.2
 
 The reference is `reference/python/`, frozen at 0.2.1.
 
@@ -32,7 +32,7 @@ The reference is `reference/python/`, frozen at 0.2.1.
 5. **Version and product strings** come from the Rust crate (`0.3.x`). Goldens use `{VERSION}` placeholders.
 6. **RSA-PSS signatures are verified.** The reference's `signed_by()` only tries PKCS#1 v1.5 for RSA, so a PSS-signed chain never links and the root is reported missing. The Rust port verifies PSS (R2).
    - Encoded as `rust_expect_override` on `rsa-pss-chain`. The override is computed, not typed: `make-cases.py` runs the reference's `analyze()` with a PSS-aware `signed_by()` and keeps every field that changes.
-7. **Ed448 is not supported.** There is no mature pure-Rust Ed448 implementation (docs/DECISIONS.md). An Ed448 private key is reported as unusable ("Ed448 keys aren't supported by this app…"), and Ed448 signatures aren't verified, so such a chain doesn't link (see 13 for what the user is told). The reference handled both.
+7. **Ed448 is not supported.** There is no mature pure-Rust Ed448 implementation. An Ed448 private key is reported as unusable ("Ed448 keys aren't supported by this app…"), and Ed448 signatures aren't verified, so such a chain doesn't link (see 13 for what the user is told). The reference handled both.
    - Case `ed448-chain` (0.3.3): an Ed448 root and a leaf it signed. Its `rust_expect_override` is computed: the reference's `analyze()` with Ed448 unverifiable, plus divergence 13's wording.
 8. **Work-factor limits.** PBKDF2 and PKCS#12 KDF iteration counts (including the PFX MAC) above 10,000,000, scrypt above N=2^20 / 64 MiB, and OpenSSH bcrypt above 1,000 rounds are refused with an error that names the number, before any derivation runs. The reference would run them, however long they took.
 9. **PFX integrity order.** The MAC is verified before anything is decrypted; with a verified MAC, a part that fails to decrypt is reported as damaged ("PFX / PKCS#12 (unreadable)") instead of as a wrong password.

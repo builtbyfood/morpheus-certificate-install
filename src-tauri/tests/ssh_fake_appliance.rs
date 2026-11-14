@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the SSH transport against the fake appliance (R5).
+//! morpheus-certificate-install 0.4.2 — the SSH transport against the fake appliance (R5).
 //!
 //! Ignored unless asked for, because it needs a live host:
 //!   MCI_TEST_SSH=host:port:user:password cargo test -p morpheus-certificate-install --test ssh_fake_appliance -- --ignored --nocapture

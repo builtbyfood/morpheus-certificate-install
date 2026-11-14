@@ -1,7 +1,7 @@
-# morpheus-certificate-install 0.4.1
+# morpheus-certificate-install 0.4.2
 [package]
 name = "mci-core"
-version = "0.4.1"
+version = "0.4.2"
 edition = "2021"
 license = "Apache-2.0"
 description = "Format conversion, chain analysis and appliance command generation for morpheus-certificate-install"
@@ -14,7 +14,7 @@ regex = "1"
 similar = "2"
 thiserror = "1"
 
-# ---- Crypto stack (R0 decision, docs/DECISIONS.md): pure Rust, RustCrypto `der` 0.7 generation ----
+# ---- Crypto stack (R0 decision): pure Rust, RustCrypto `der` 0.7 generation ----
 # Every crate below is a stable release; no C toolchain. Stay on one ASN.1 generation (der 0.7)
 # so there is one parser in the binary — don't mix in der 0.8 crates (x509-cert 0.3, pkcs8 0.11, …).
 # ASN.1 / containers
@@ -24,7 +24,7 @@ const-oid = "0.9"
 x509-cert = { version = "0.2.5", default-features = false, features = ["std"] }
 # No `cms`: der 0.7 *re-sorts* a SET OF on decode, which re-orders the certificates in an
 # OpenSSL-written .p7b. formats/p7.rs walks `certificates [0]` itself to keep file order.
-# PKCS#12: types + RFC 7292 KDF; the container reader is ours (formats/pfx.rs), see DECISIONS.md.
+# PKCS#12: types + RFC 7292 KDF; the container reader is ours (formats/pfx.rs).
 pkcs12 = { version = "0.1", features = ["kdf"] }
 # Keys: PKCS#8 (incl. PBES2 decrypt), PKCS#1, SEC1; PBES2 for PFX safes.
 pkcs8 = { version = "0.10", features = ["encryption", "3des", "pem", "std"] }

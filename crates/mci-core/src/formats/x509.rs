@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — X.509 certificate → `model::Cert`, every field precomputed.
+//! morpheus-certificate-install 0.4.2 — X.509 certificate → `model::Cert`, every field precomputed.
 //!
 //! Parsing and validation use `x509-cert`; names are rendered from the raw DER by our own
 //! [`rfc4514`], which mirrors cryptography's `Name.rfc4514_string()` (RDNs reversed, multi-valued

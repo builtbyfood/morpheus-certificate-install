@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the detached runner script. Byte-identical to the reference
+//! morpheus-certificate-install 0.4.2 — the detached runner script. Byte-identical to the reference
 //! (`engine.runner_script`) apart from the version in the header line.
 
 use crate::appliance::{LOG_DIR, TRUST_DIR};

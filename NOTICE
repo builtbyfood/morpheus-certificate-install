@@ -15,9 +15,9 @@ MIT License; the full text is in ui/vendor/LICENSE-xterm.txt.
   Copyright (c) 2012-2013, Christopher Jeffrey
 
 --------------------------------------------------------------------------
-charon-ssh  (crates/charon-ssh)
-A copy of the SSH crate from Charon (https://github.com/builtbyfood/charon),
-kept in sync with Charon's copy by hand (docs/CHARON-SSH-CHANGES.md).
+charon-ssh  (https://github.com/builtbyfood/charon-ssh)
+The SSH client, shared with Charon (https://github.com/builtbyfood/charon),
+built in from a pinned commit (Cargo.toml).
 Apache License, Version 2.0.
 
   Copyright 2026 Travis DeLuca / builtbyfood

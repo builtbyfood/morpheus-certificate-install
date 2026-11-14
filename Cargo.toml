@@ -1,13 +1,12 @@
-# morpheus-certificate-install 0.4.1
+# morpheus-certificate-install 0.4.2
 [workspace]
-members = ["crates/charon-ssh", "crates/mci-core", "crates/mci-cli", "src-tauri"]
+members = ["crates/mci-core", "crates/mci-cli", "src-tauri"]
 resolver = "2"
 
 [workspace.dependencies]
-# charon-ssh: a copy of the crate from Charon, kept here (decision D1 = A, 0.3.21). It is charon-ssh
-# 0.1.0 plus docs/charon-ssh-patches 0001–0009. This copy and Charon's must be kept in sync by hand:
-# every change here goes in docs/CHARON-SSH-CHANGES.md (and as a patch in docs/charon-ssh-patches/).
-charon-ssh = { path = "crates/charon-ssh" }
+# charon-ssh: the SSH client, from https://github.com/builtbyfood/charon-ssh, pinned to the 0.2.1
+# commit (a host key of another type is a changed key). Cargo.lock records the same commit.
+charon-ssh = { git = "https://github.com/builtbyfood/charon-ssh", rev = "986a44ef5eca828a423943f625c9139dfd84b991" }
 
 # Profiles only take effect in the workspace root (cargo ignores them in member crates).
 [profile.release]

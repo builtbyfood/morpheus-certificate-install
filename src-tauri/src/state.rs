@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — process state (one window, one operator). Secrets live here
+//! morpheus-certificate-install 0.4.2 — process state (one window, one operator). Secrets live here
 //! only, in memory: the transport holds SSH/sudo passwords; `morpheus_token` is the API token.
 
 use crate::events::Event;

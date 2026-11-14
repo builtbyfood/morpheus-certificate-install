@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — the test-only hooks exist in debug builds only. Builds the
+// morpheus-certificate-install 0.4.2 — the test-only hooks exist in debug builds only. Builds the
 // release exe (as `tauri build` does: cargo --release with tauri/custom-protocol) and checks the
 // hook's name is in the debug exe (so the search works) and nowhere in the release exe.
 // Set MCI_CLICK_NO_RELEASE_BUILD=1 to check target/release as it is.

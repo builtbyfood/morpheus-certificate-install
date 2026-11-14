@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — a changed host key is refused, from the page. The VM's
+// morpheus-certificate-install 0.4.2 — a changed host key is refused, from the page. The VM's
 // key is NOT rotated: this suite's known_hosts is pre-seeded with wrong keys for the VM (one per
 // key type), so the real key looks changed. No dialog may offer to trust it.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";

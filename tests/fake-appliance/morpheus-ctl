@@ -1,5 +1,5 @@
 #!/bin/bash
-# morpheus-certificate-install 0.4.1 — test stand-in for the real morpheus-ctl (reconfigure, restart nginx|morpheus-ui, status)
+# morpheus-certificate-install 0.4.2 — test stand-in for the real morpheus-ctl (reconfigure, restart nginx|morpheus-ui, status)
 [ "$(id -u)" = 0 ] || { echo "morpheus-ctl must run as root"; exit 1; }
 case "$1" in
  reconfigure) echo "Starting Chef Client, version 14.x (fake)"; for r in nginx morpheus-ui rabbitmq mysql elasticsearch; do echo "Recipe: morpheus::$r"; sleep 0.4; echo "  * template[/opt/morpheus/conf/$r.conf] action create (up to date)"; done

@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — the files a clone of the repository would hold: everything
+// morpheus-certificate-install 0.4.2 — the files a clone of the repository would hold: everything
 // under the root except .git and what the .gitignore files exclude. Used by check-private.mjs,
 // fresh-clone-check.mjs, export-tree.mjs and check-links.mjs (this folder isn't a git checkout, so
 // `git ls-files` isn't available).
@@ -56,15 +56,22 @@ export function trackedFiles(root, skip = () => false) {
   return out.sort();
 }
 
-/** Paths kept in the development folder but never published: the Claude Code rules and the
- *  development notes (0.4.1, Travis). The fake appliance (tests/fake-appliance/,
- *  docs/FAKE-APPLIANCE.md) is published. check-private still scans these; check-links fails on any
- *  published link to them. An entry is a file path, or a folder path ending in "/". */
-export const LOCAL_ONLY = ["CLAUDE.md", "docs/development/"];
-const localOnly = (rel) => LOCAL_ONLY.some((p) => (p.endsWith("/") ? rel.startsWith(p) : rel === p));
+/** The maintainer's notes kept in the development folder but never published are listed, one path
+ *  per line (# comments allowed), in the gitignored `.local-only` file at the root, beside
+ *  `.private-denylist`. An entry is a file path, or a folder path ending in "/". A clone of the
+ *  repository has no such file, and nothing to leave out. check-private still scans these files;
+ *  check-links fails on any published link to them. export-tree refuses to run without the list. */
+export const LOCAL_ONLY_FILE = ".local-only";
+export function localOnlyList(root) {
+  const f = join(root, LOCAL_ONLY_FILE);
+  if (!existsSync(f)) return [];
+  return readFileSync(f, "utf8").split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+}
 
 /** The files that go into the published repository: tracked, minus the local-only list, the
  *  private-strings list and a machine-specific cargo config. Sorted, forward slashes. */
 export function publishedFiles(root) {
-  return trackedFiles(root, (rel) => rel === ".private-denylist" || rel === ".cargo/config.toml" || localOnly(rel) || localOnly(rel + "/"));
+  const list = localOnlyList(root);
+  const localOnly = (rel) => list.some((p) => (p.endsWith("/") ? rel.startsWith(p) : rel === p));
+  return trackedFiles(root, (rel) => rel === ".private-denylist" || rel === LOCAL_ONLY_FILE || rel === ".cargo/config.toml" || localOnly(rel) || localOnly(rel + "/"));
 }

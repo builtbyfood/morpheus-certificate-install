@@ -1,4 +1,4 @@
-# Building on macOS — morpheus-certificate-install 0.4.1
+# Building on macOS — morpheus-certificate-install 0.4.2
 
 **Not yet tested on a Mac.** CI builds and tests the macOS app on GitHub's Apple Silicon runner (`.github/workflows/build.yml`, job `macos`): arm64 natively, and Intel cross-compiled. Nobody has run the result on a Mac yet. If you do, please open an issue with what you found, using the list in section 4.
 

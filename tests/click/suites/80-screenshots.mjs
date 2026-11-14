@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — the README's screenshots, from the real app against the
+// morpheus-certificate-install 0.4.2 — the README's screenshots, from the real app against the
 // fake VM, at a fixed size (1320×860 CSS px, the app's default window; light theme), with corpus
 // certificates only. Opt-in (it rewrites docs/screenshots/): npm run test:click -- screenshots
 //

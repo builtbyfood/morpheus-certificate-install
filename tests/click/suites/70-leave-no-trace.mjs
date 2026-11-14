@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — portable "Leave no trace" at a real exit. The debug exe
+// morpheus-certificate-install 0.4.2 — portable "Leave no trace" at a real exit. The debug exe
 // runs from a temp portable folder; the window is closed the way the user closes it (WM_CLOSE).
 //  1. Turned on (and, with MCI_TEST_SSH, connected, so known_hosts is written): data/ is gone
 //     after the exit.

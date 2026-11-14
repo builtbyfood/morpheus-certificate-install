@@ -1,4 +1,4 @@
-# Contributing — morpheus-certificate-install 0.4.1
+# Contributing — morpheus-certificate-install 0.4.2
 
 Bug reports and pull requests are welcome. Please open an issue before a large change, so we can agree on the approach first. Security problems go through [SECURITY.md](SECURITY.md), not an issue.
 
@@ -20,7 +20,7 @@ Bug reports and pull requests are welcome. Please open an issue before a large c
    ```
 4. **Appliance shell text lives only in `crates/mci-core` (`appliance` and `runner`).** Each command string has a golden test. Transports only wrap and deliver commands.
 
-`crates/charon-ssh` is shared with [Charon](https://github.com/builtbyfood/charon). Changes to it are recorded as numbered patches in `docs/charon-ssh-patches/` and listed in [docs/CHARON-SSH-CHANGES.md](docs/CHARON-SSH-CHANGES.md).
+The SSH client is [charon-ssh](https://github.com/builtbyfood/charon-ssh), shared with [Charon](https://github.com/builtbyfood/charon) and pinned to one commit in `Cargo.toml`. Changes to it go to that repository first; this one then moves the pin.
 
 ## Test tiers
 

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the command handlers and job orchestration (R7).
+//! morpheus-certificate-install 0.4.2 — the command handlers and job orchestration (R7).
 //!
 //! Port of reference/python app.py (handlers) + engine.py (preflight/plan/apply/verify/rollback).
 //! Request/response JSON = the Python /api/* bodies; events = events.rs.

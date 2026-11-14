@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — crate-agnostic data model.
+//! morpheus-certificate-install 0.4.2 — crate-agnostic data model.
 //!
 //! Parsing (formats.rs) fills these from whatever crypto crate R0 picks; everything after
 //! that (chain building, checks, export, JSON for the UI) works on these types only.

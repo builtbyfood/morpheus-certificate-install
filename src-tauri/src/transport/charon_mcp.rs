@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — drive an open Charon session over Charon's MCP server. **Round 1, R6.**
+//! morpheus-certificate-install 0.4.2 — drive an open Charon session over Charon's MCP server. **Round 1, R6.**
 //!
 //! Contract (builtbyfood/charon src-tauri/src/mcp): POST JSON-RPC to http://127.0.0.1:<port>/ with
 //! `Authorization: Bearer <token>`; port+token from `<charon data>/mcp-endpoint.json`. Methods:

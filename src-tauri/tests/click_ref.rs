@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the click tests' reference connection to the fake
+//! morpheus-certificate-install 0.4.2 — the click tests' reference connection to the fake
 //! appliance (tests/click/lib/vm.mjs). The click suites drive the app's page; to set the VM up and
 //! check it afterwards they need a second, independent connection, as engine_e2e has. This test is
 //! that connection: it runs MCI_CLICK_REF (a shell script, test-only text kept in

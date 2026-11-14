@@ -1,4 +1,4 @@
-# Click tests — morpheus-certificate-install 0.4.1
+# Click tests — morpheus-certificate-install 0.4.2
 
 The real app (the debug build), driven through its page the way a user drives it: real mouse clicks and typing, files chosen in the page's own file input, confirm dialogs answered by clicking their buttons. It runs on Windows, over the Chrome DevTools Protocol that WebView2 exposes when it's started with `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=<port>`. It's plain Node (22 or later): no browser download and no npm packages.
 

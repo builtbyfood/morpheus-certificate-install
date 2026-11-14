@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — PFX / PKCS#12 reader (decrypt-only, hardened).
+//! morpheus-certificate-install 0.4.2 — PFX / PKCS#12 reader (decrypt-only, hardened).
 //!
 //! Order of operations, for each password tried:
 //! 1. Walk the outer structure (bounds-checked, BER-aware: [`super::tlv`]). Not a PFX → [`PfxError::NotPfx`];

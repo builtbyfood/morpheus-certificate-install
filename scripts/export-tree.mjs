@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.1 — copy the published tree into a publish folder
-// (docs/RELEASE-CHECKLIST.md).
+// morpheus-certificate-install 0.4.2 — copy the published tree into a publish folder.
 //   npm run export-tree -- <folder>   copy, then verify (the manifest check below)
 //   npm run export-tree -- --list     print the published file list, one path per line (forward
 //                                     slashes, sorted), to compare with `git ls-files` there
@@ -10,7 +9,8 @@
 //     copied in, so `git add -A` there records added, changed and removed files alike.
 // Anything else (a non-empty folder without .git) is refused. "Published" is publishedFiles() in
 // tracked-files.mjs: everything the .gitignore files don't exclude, minus the local .private-denylist,
-// .cargo/config.toml and LOCAL_ONLY.
+// .cargo/config.toml and the paths listed in the local .local-only file. Without that list (or with an
+// empty one) the export is refused, so the maintainer's notes can't be published by accident.
 //
 // Manifest check (0.4.1): after copying, every file in the folder (except .git) is listed and compared
 // with the published list, and each file's bytes with the source. Any file missing, extra or different
@@ -21,12 +21,16 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { publishedFiles } from "./tracked-files.mjs";
+import { LOCAL_ONLY_FILE, localOnlyList, publishedFiles } from "./tracked-files.mjs";
 import { check as checkLinks } from "./check-links.mjs";
 import { checkAttributes } from "./check-gitattributes.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const arg = process.argv[2];
+if (!localOnlyList(root).length) {
+  console.error(`export-tree: ${LOCAL_ONLY_FILE} is missing or empty in ${root}. It lists the paths that are never published; restore it before exporting.`);
+  process.exit(1);
+}
 if (arg === "--list") {
   process.stdout.write(publishedFiles(root).join("\n") + "\n");
   process.exit(0);
@@ -89,4 +93,4 @@ if (attr.problems.length) {
 }
 console.log(`export-tree: ${files.length} files copied to ${dest}; manifest check OK (every file present, none extra, all identical)`);
 console.log(`export-tree: links OK (every relative link in the exported Markdown resolves); .gitattributes OK (${attr.text} text files LF, ${attr.exact} kept byte-exact, ${attr.binary} binary)`);
-console.log("After `git add -A` there, compare git's list with this one (docs/RELEASE-CHECKLIST.md, \"The file list\").");
+console.log("After `git add -A` there, compare `git ls-files` with `npm run export-tree -- --list`.");

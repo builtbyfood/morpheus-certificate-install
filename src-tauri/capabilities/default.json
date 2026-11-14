@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "morpheus-certificate-install 0.4.1 — the main window may call app commands, listen to events and open save/open dialogs",
+  "description": "morpheus-certificate-install 0.4.2 — the main window may call app commands, listen to events and open save/open dialogs",
   "windows": ["main"],
   "permissions": ["core:default", "core:event:default", "dialog:default"]
 }

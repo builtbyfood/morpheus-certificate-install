@@ -1,4 +1,4 @@
-"""morpheus-certificate-install 0.4.1 — a stand-in for Charon's MCP HTTP server (tests only).
+"""morpheus-certificate-install 0.4.2 — a stand-in for Charon's MCP HTTP server (tests only).
 
 Started from reference/python/tests/mock_charon.py (frozen, unchanged). Same contract as
 builtbyfood/charon src-tauri/src/mcp: POST JSON-RPC with `Authorization: Bearer <token>`, tools

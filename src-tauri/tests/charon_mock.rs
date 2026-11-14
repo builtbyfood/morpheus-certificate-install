@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the Charon transport against tests/mock_charon.py (R6).
+//! morpheus-certificate-install 0.4.2 — the Charon transport against tests/mock_charon.py (R6).
 //!
 //! The mock runs in SSH mode: a PTY session to the fake appliance, answering sudo the way Charon
 //! does at the trusted tier, with real terminal output (CRLF, sudo's lecture and prompt) plus an

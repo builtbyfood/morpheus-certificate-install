@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — TLS check from this machine (R7).
+//! morpheus-certificate-install 0.4.2 — TLS check from this machine (R7).
 //!
 //! Port of reference engine.local_tls(). Two connections to connect_addr (or the host) with SNI = host:
 //!   1. no verification → the served leaf's SHA-256 → matches_new?

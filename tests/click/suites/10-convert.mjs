@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — convert only, no appliance: corpus chain.p7b + leaf-pkcs1.key.
+// morpheus-certificate-install 0.4.2 — convert only, no appliance: corpus chain.p7b + leaf-pkcs1.key.
 // Seals, the input table, the Trust default and its reason, and the exported zip's file list.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";

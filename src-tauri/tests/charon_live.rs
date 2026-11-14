@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the Charon transport against the REAL Charon on this
+//! morpheus-certificate-install 0.4.2 — the Charon transport against the REAL Charon on this
 //! machine (R6). Ignored unless MCI_TEST_CHARON is set.
 //!
 //! Needs, in Charon: the MCP server on; an SSH session open to the fake appliance as mcitest

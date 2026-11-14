@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — a wildcard certificate with no connection: the FQDN is
+// morpheus-certificate-install 0.4.2 — a wildcard certificate with no connection: the FQDN is
 // required, and export stays blocked until a name the certificate covers is entered (PARITY 27).
 import { readFileSync } from "node:fs";
 import { join } from "node:path";

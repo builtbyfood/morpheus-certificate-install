@@ -1,7 +1,7 @@
-# morpheus-certificate-install 0.4.1
+# morpheus-certificate-install 0.4.2
 [package]
 name = "morpheus-certificate-install"
-version = "0.4.1"
+version = "0.4.2"
 description = "Convert and install CA-signed certificates on an HPE Morpheus appliance"
 authors = ["Travis DeLuca"]
 license = "Apache-2.0"
@@ -16,7 +16,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 mci-core = { path = "../crates/mci-core" }
-# SSH (exec, stdin, streaming, PTY, host keys): crates/charon-ssh; changes to it are listed in docs/CHARON-SSH-CHANGES.md.
+# SSH (exec, stdin, streaming, PTY, host keys): charon-ssh, pinned in the workspace Cargo.toml.
 charon-ssh = { workspace = true }
 tauri = { version = "2", features = [] }
 tauri-plugin-dialog = "2"

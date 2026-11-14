@@ -1,10 +1,10 @@
-//! morpheus-certificate-install 0.4.1 — private keys, normalised the way the reference writes them.
+//! morpheus-certificate-install 0.4.2 — private keys, normalised the way the reference writes them.
 //!
 //! Whatever the input (PKCS#8, PKCS#1, SEC1, DSA, encrypted PKCS#8, OpenSSL "traditional"
 //! encrypted PEM, OpenSSH), the result is the unencrypted PKCS#8 DER that Python's
 //! `private_bytes(DER, PKCS8, NoEncryption())` produces, plus the SubjectPublicKeyInfo that
 //! `public_key().public_bytes(DER, SubjectPublicKeyInfo)` produces. The R0 spike checked both
-//! byte-for-byte against the reference for RSA and EC (docs/DECISIONS.md).
+//! byte-for-byte against the reference for RSA and EC.
 //!
 //! - RSA: PKCS#8 { rsaEncryption NULL, RSAPrivateKey re-encoded canonically }.
 //! - EC: PKCS#8 { ecPublicKey namedCurve, ECPrivateKey { 1, d padded to the field size, **no** [0]

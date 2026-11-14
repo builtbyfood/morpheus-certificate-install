@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the CLI end to end: `convert` on corpus sets, the output
+//! morpheus-certificate-install 0.4.2 — the CLI end to end: `convert` on corpus sets, the output
 //! tree compared byte for byte with fixtures/golden/export-p7b-pkcs1/ (INSTALL.txt: all but line 1,
 //! the last line and the "Converted from" lines, which name each set's own inputs).
 

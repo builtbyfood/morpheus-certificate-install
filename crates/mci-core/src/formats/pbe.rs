@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — password-based decryption for PKCS#8 keys and PKCS#12 safes.
+//! morpheus-certificate-install 0.4.2 — password-based decryption for PKCS#8 keys and PKCS#12 safes.
 //!
 //! Two families, both decrypt-only:
 //! - **PKCS#12 PBE** (RFC 7292 App. B KDF, `pbeWithSHAAnd…`): RC2-40/128 and 2-/3-key 3DES, as in

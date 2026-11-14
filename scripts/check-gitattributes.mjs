@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.1 — .gitattributes covers every file in the published tree.
+// morpheus-certificate-install 0.4.2 — .gitattributes covers every file in the published tree.
 //   npm run check-gitattributes             the rules, read here (fast; also run by export-tree)
 //   node scripts/check-gitattributes.mjs --git   the same files committed by real git in a temp repository
 //                                            with core.autocrlf=true (Git for Windows' default), and

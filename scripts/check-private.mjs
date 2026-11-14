@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.1 — fail if the repo contains anything from .private-denylist.
+// morpheus-certificate-install 0.4.2 — fail if the repo contains anything from .private-denylist.
 //   node scripts/check-private.mjs              (npm run check-private)
 //   node scripts/check-private.mjs --self-test  proves the certificate check with planted certificates
 //   node scripts/check-private.mjs --root DIR   check every file in another folder (an export) with this denylist

@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — assertions for the click suites.
+// morpheus-certificate-install 0.4.2 — assertions for the click suites.
 import { isDeepStrictEqual, inspect } from "node:util";
 
 export function ok(cond, msg) { if (!cond) throw new Error(`assertion failed: ${msg}`); }

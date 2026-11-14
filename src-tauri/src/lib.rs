@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — Tauri app.
+//! morpheus-certificate-install 0.4.2 — Tauri app.
 //!
 //! Every command takes one JSON object (`args`) and returns JSON or an error string — the same
 //! request/response bodies as the Python app's /api/* routes, so ui/index.html only swaps fetch()

@@ -12,6 +12,8 @@ __pycache__/
 src-tauri/icons/android/
 src-tauri/icons/ios/
 
-# Local only, never committed: a machine-specific cargo config (none is needed) and the private-strings list.
+# Local only, never committed: a machine-specific cargo config (none is needed), the private-strings list
+# and the list of the maintainer's notes that aren't published.
 .cargo/config.toml
 .private-denylist
+.local-only

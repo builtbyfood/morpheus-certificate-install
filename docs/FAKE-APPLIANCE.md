@@ -1,4 +1,4 @@
-# The fake appliance — morpheus-certificate-install 0.4.1
+# The fake appliance — morpheus-certificate-install 0.4.2
 
 `tests/fake-appliance/` turns a machine into a stand-in for an HPE Morpheus appliance, good enough for the SSH transport tests (R5), the engine end-to-end test (R7) and the click tests (R8). **It is not Morpheus.** It has an SSH server, a user whose `sudo` asks for a password, and stand-ins for `morpheus-ctl`, `keytool` and nginx.
 

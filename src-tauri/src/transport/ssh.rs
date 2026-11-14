@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — SSH transport on the charon-ssh crate. **Round 1, R5.**
+//! morpheus-certificate-install 0.4.2 — SSH transport on the charon-ssh crate. **Round 1, R5.**
 //!
 //! Port of reference transport.SshTransport. Behaviour that matters:
 //! * Host keys: TOFU against <data>/known_hosts (charon-ssh `HostKeys::with_paths`, never

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — events to the UI on channel "mci".
+//! morpheus-certificate-install 0.4.2 — events to the UI on channel "mci".
 //! Same JSON as the Python app's SSE stream (`type` tag + fields), so ui/index.html handles them unchanged.
 //!
 //! Not kept: the reference's `ts` field (the page never reads it) and its replay history (an SSE

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — files in the layout Morpheus expects.
+//! morpheus-certificate-install 0.4.2 — files in the layout Morpheus expects.
 //!
 //!   <base>.crt  <base>.key  ca-chain.pem  trusted_certs/<alias>.pem  morpheus.rb.snippet  INSTALL.txt
 //!

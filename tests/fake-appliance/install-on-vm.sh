@@ -1,5 +1,5 @@
 #!/bin/bash
-# morpheus-certificate-install 0.4.1 — turn a fresh Ubuntu 24.04 or 26.04 VM into the fake appliance.
+# morpheus-certificate-install 0.4.2 — turn a fresh Ubuntu 24.04 or 26.04 VM into the fake appliance.
 #
 #   sudo bash install-on-vm.sh        (from this folder, copied to the VM)
 #

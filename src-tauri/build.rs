@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1
+// morpheus-certificate-install 0.4.2
 //
 // On Windows the app manifest (Common Controls v6, which the dialog plugin's TaskDialogIndirect
 // needs) is embedded by the linker for every binary in this package, not only the app: the

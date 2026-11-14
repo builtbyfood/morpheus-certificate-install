@@ -1,4 +1,4 @@
-# morpheus-certificate-install 0.4.1 — test stand-in for nginx + a sliver of the Morpheus API.
+# morpheus-certificate-install 0.4.2 — test stand-in for nginx + a sliver of the Morpheus API.
 #
 # Serves, on :443, the certificate and key that morpheus.rb names (the last active
 # nginx['ssl_certificate'] / nginx['ssl_server_key'] lines), so install / verify / rollback can be

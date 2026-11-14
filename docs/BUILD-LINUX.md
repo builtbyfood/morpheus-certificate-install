@@ -1,4 +1,4 @@
-# Building on Linux (Fedora) — morpheus-certificate-install 0.4.1
+# Building on Linux (Fedora) — morpheus-certificate-install 0.4.2
 
 Build the app, the bundles and the portable tar.gz on Fedora, smoke-test them, and record the results (section 4). CI builds the same bundles on Ubuntu 22.04 (`.github/workflows/build.yml`).
 
@@ -25,7 +25,7 @@ rustc --version
 
 ## 2. Build
 
-From a copy of the repository (the tracked files are enough; no `.cargo/config.toml` is needed any more, since charon-ssh is in `crates/`):
+From a copy of the repository (the tracked files are enough; no `.cargo/config.toml` is needed; cargo fetches charon-ssh from GitHub at the pinned commit):
 
 ```bash
 npm ci

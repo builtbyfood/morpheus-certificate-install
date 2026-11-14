@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the engine end to end against the fake appliance (R7; moved
+//! morpheus-certificate-install 0.4.2 — the engine end to end against the fake appliance (R7; moved
 //! here from R8). Drives the app's commands (tauri MockRuntime, no window, no UI) — connect,
 //! preflight, analyze, plan, apply, verify, runs, backups, rollback, the Morpheus API check — and
 //! checks the appliance afterwards through a separate SSH connection (the "reference").

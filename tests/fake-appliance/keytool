@@ -1,5 +1,5 @@
 #!/bin/bash
-# morpheus-certificate-install 0.4.1 — test stand-in for keytool, with state like a real keystore:
+# morpheus-certificate-install 0.4.2 — test stand-in for keytool, with state like a real keystore:
 # the aliases are kept in /var/lib/fake-morpheus/keytool-aliases (one per line).
 #   -importcert  adds the alias; fails (exit 1) if it already exists, as keytool does
 #   -delete      removes the alias (exit 0); fails (exit 1) if it doesn't exist, as keytool does

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the app on tauri's MockRuntime: the real commands, state
+//! morpheus-certificate-install 0.4.2 — the app on tauri's MockRuntime: the real commands, state
 //! and events (`mci::configure`), invoked over IPC without a window (R7).
 
 use mci_app::paths::AppPaths;

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — `-----BEGIN OPENSSH PRIVATE KEY-----` (openssh-key-v1).
+//! morpheus-certificate-install 0.4.2 — `-----BEGIN OPENSSH PRIVATE KEY-----` (openssh-key-v1).
 //!
 //! Layout (PROTOCOL.key in OpenSSH): "openssh-key-v1\0", string cipher, string kdf, string kdfoptions,
 //! u32 nkeys, string pubkey…, string private-section. The private section (decrypted if needed)

@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the seal's 12-point outline is centred in its 68×68 viewBox,
+//! morpheus-certificate-install 0.4.2 — the seal's 12-point outline is centred in its 68×68 viewBox,
 //! in both places it's drawn: the app icon's source (src-tauri/icons/icon.svg) and the page's
 //! `sealSvg()` (ui/index.html). The first scaffold's hand-drawn outline was off-centre, at about
 //! (31, 28.5); 0.4.0 replaced it with a symmetric one.

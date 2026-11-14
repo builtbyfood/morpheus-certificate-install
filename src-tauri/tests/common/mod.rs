@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — helpers shared by the live/mock transport tests.
+//! morpheus-certificate-install 0.4.2 — helpers shared by the live/mock transport tests.
 #![allow(dead_code)]
 
 pub mod app;

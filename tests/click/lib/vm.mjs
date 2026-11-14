@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.1 — the fake appliance for the click suites: its address
+// morpheus-certificate-install 0.4.2 — the fake appliance for the click suites: its address
 // (MCI_TEST_SSH) and a reference connection to set it up and check it, independent of the app
 // under test (src-tauri/tests/click_ref.rs, over its own SSH session).
 //

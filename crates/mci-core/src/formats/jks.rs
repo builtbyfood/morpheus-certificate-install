@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — Java KeyStore (JKS), read natively (no Java, no crate).
+//! morpheus-certificate-install 0.4.2 — Java KeyStore (JKS), read natively (no Java, no crate).
 //!
 //! Format: magic 0xFEEDFEED, version 2, entry count; entries are
 //! tag 1 (private key: alias, timestamp, EncryptedPrivateKeyInfo, certificate chain) or

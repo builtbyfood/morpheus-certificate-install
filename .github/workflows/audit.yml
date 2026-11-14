@@ -1,4 +1,4 @@
-# morpheus-certificate-install 0.4.1
+# morpheus-certificate-install 0.4.2
 # audit: `cargo audit` on the whole workspace's Cargo.lock, every Monday and on demand (Actions → audit →
 # Run workflow). A new RustSec advisory against a dependency then shows up as a failed scheduled run,
 # not on release day. Ignored advisories, each with its reason, are in .cargo/audit.toml; "unmaintained"

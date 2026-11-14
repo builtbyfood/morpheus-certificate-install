@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.1 — every relative link in every published .md file must resolve.
+// morpheus-certificate-install 0.4.2 — every relative link in every published .md file must resolve.
 //   npm run check-links            (CI runs it in the `test` job)
 //   node scripts/check-links.mjs --self-test
 //
@@ -8,7 +8,7 @@
 // - External links (`https:`, `mailto:` …) aren't fetched.
 // - A relative target (relative to the file, or to the repository root when it starts with "/") must
 //   be a PUBLISHED file, or a folder holding one (publishedFiles() in tracked-files.mjs). A link to a
-//   local-only file (CLAUDE.md, docs/development/ …) therefore fails although the file exists here.
+//   local-only file (listed in .local-only) therefore fails although the file exists here.
 // - `#anchor` (alone, or after a .md target) must match a heading there, slugged as GitHub does:
 //   lower case, punctuation dropped, spaces to "-", repeats numbered -1, -2 …
 // reference/python/ is the frozen Python 0.2.1 (its README describes that project's own layout), so
@@ -102,12 +102,12 @@ export function check(files, read) {
 function selfTest() {
   const docs = {
     "README.md": "# Title\n## Quick start: convert only\n## macOS\n## macOS\nSee [a](docs/A.md#the-b-section), [b](#quick-start-convert-only), [c](#macos-1), ![i](docs/shot.png), [d](docs/), [e](https://example.com), [f](/LICENSE)\n```\n[not checked](nowhere.md)\n```\n`[inline](nowhere.md)`\n",
-    "docs/A.md": "# A\n## The **B** section\n[up](../README.md#title) [bad](../CLAUDE.md) [gone](missing.md) [anchor](#nope) [out](../../x.md)\n<img src=\"shot.png\"> <a href=\"../NOTICE\">n</a>\n[ref]: ./A.md#a\n",
+    "docs/A.md": "# A\n## The **B** section\n[up](../README.md#title) [bad](../NOTES.md) [gone](missing.md) [anchor](#nope) [out](../../x.md)\n<img src=\"shot.png\"> <a href=\"../NOTICE\">n</a>\n[ref]: ./A.md#a\n",
     "docs/shot.png": "", "LICENSE": "", "NOTICE": "",
   };
   const bad = check(Object.keys(docs), (f) => docs[f]);
   const want = [
-    "docs/A.md:3 → ../CLAUDE.md: CLAUDE.md isn't in the published tree",
+    "docs/A.md:3 → ../NOTES.md: NOTES.md isn't in the published tree",
     "docs/A.md:3 → missing.md: docs/missing.md isn't in the published tree",
     "docs/A.md:3 → #nope: no heading \"#nope\" in docs/A.md",
     "docs/A.md:3 → ../../x.md: points outside the repository",

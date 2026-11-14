@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.1 — one version everywhere. src-tauri/tauri.conf.json is canonical.
+// morpheus-certificate-install 0.4.2 — one version everywhere. src-tauri/tauri.conf.json is canonical.
 //   node scripts/bump-version.mjs          # propagate tauri.conf.json's version
 //   node scripts/bump-version.mjs 0.3.1    # set it everywhere (npm run bump -- 0.3.1)
 // Updates: tauri.conf.json, package.json, every Cargo.toml [package] version, Cargo.lock, and the
@@ -26,8 +26,7 @@ write(confPath, conf, conf.replace(TOP, `$1${version}$3`));
 const pkg = join(root, "package.json");
 write(pkg, readFileSync(pkg, "utf8"), readFileSync(pkg, "utf8").replace(TOP, `$1${version}$3`));
 
-// crates/charon-ssh: the copy of Charon's crate keeps its own version (0.1.0) and no stamp.
-const SKIP = new Set(["node_modules", "target", ".git", "reference", "fixtures", "vendor", "gen", "dist-portable", "charon-ssh"]);
+const SKIP = new Set(["node_modules", "target", ".git", "reference", "fixtures", "vendor", "gen", "dist-portable"]);
 const EXT = /\.(rs|toml|mjs|js|cjs|html|md|json|yml|sh|svg|py|xml)$/;
 // Files without an extension that carry the stamp (tests/fake-appliance).
 const NAMES = new Set(["keytool", "morpheus-ctl", "rotate-host-keys"]);

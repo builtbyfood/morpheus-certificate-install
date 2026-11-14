@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// morpheus-certificate-install 0.4.1 — does a fresh clone build? (npm run fresh-clone-check)
+// morpheus-certificate-install 0.4.2 — does a fresh clone build? (npm run fresh-clone-check)
 // Copies the tracked files (scripts/tracked-files.mjs: no target/, node_modules/, .cargo/config.toml,
 // generated icons or other gitignored files) to a new temp folder, then runs there what a fresh
 // checkout needs, as README → Build says:

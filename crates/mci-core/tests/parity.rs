@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — conversion parity with the Python reference.
+//! morpheus-certificate-install 0.4.2 — conversion parity with the Python reference.
 //! RED until Round 1 (R1–R4) is done; GREEN is the definition of done. Cases: fixtures/cases.json.
 
 use mci_core::formats::{parse_files, InputFile, Passwords};

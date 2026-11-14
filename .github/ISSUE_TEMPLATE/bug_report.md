@@ -5,7 +5,7 @@ title: ''
 labels: bug
 ---
 
-<!-- morpheus-certificate-install 0.4.1. Security problems: see SECURITY.md, not an issue. -->
+<!-- morpheus-certificate-install 0.4.2. Security problems: see SECURITY.md, not an issue. -->
 
 **Version**
 <!-- The window's title bar, or `morpheus-certificate-install-cli --version` -->

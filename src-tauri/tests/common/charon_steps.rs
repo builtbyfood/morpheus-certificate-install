@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — the steps both Charon-transport tests run (mock and live).
+//! morpheus-certificate-install 0.4.2 — the steps both Charon-transport tests run (mock and live).
 //!
 //! `t` is the Charon transport under test. `reference` is the SSH transport (an exec channel: no
 //! terminal in the way) to the same appliance, used for the "exact bytes" comparison. `password`

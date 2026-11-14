@@ -1,4 +1,4 @@
-# Architecture — morpheus-certificate-install 0.4.1
+# Architecture — morpheus-certificate-install 0.4.2
 
 ```
 ui/index.html ──bridge.js──► Tauri invoke("<command>", {args})      ◄── events on "mci"

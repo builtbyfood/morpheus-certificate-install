@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — optional Morpheus API check (R7).
+//! morpheus-certificate-install 0.4.2 — optional Morpheus API check (R7).
 //!
 //! Port of reference engine.morpheus_check / set_appliance_url. Bearer token header only
 //! (`?access_token=` is ignored by Morpheus). GET /api/whoami → user.username, appliance.buildVersion;

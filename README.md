@@ -1,6 +1,6 @@
 # Morpheus Certificate Install
 
-*morpheus-certificate-install 0.4.1*
+*morpheus-certificate-install 0.4.2*
 
 Morpheus Certificate Install takes whatever certificate files a CA or a customer sends you and turns them into the files an HPE Morpheus appliance needs. It can then install them on the appliance over SSH: it takes a backup first, shows `morpheus-ctl reconfigure` live, checks what nginx actually serves, and rolls back with one click.
 
@@ -186,7 +186,6 @@ cargo run -p mci-cli -- convert fixtures/corpus/chain.p7b fixtures/corpus/leaf-p
 ```
 crates/mci-core      conversion, chain analysis and every appliance command (no I/O, no Tauri)
 crates/mci-cli       morpheus-certificate-install-cli convert …
-crates/charon-ssh    the SSH client, shared with Charon (docs/CHARON-SSH-CHANGES.md)
 src-tauri/           the app: commands, jobs, the SSH and Charon transports, TLS verify
 ui/                  the page (plain JavaScript, xterm.js) and its bridge to Tauri
 fixtures/            test corpus, cases and goldens, generated from the reference
@@ -201,4 +200,4 @@ The live tests run against a fake Morpheus appliance: an Ubuntu VM that [tests/f
 
 ## License
 
-Apache-2.0, see [LICENSE](LICENSE). xterm.js, vendored in `ui/vendor/`, is MIT. [NOTICE](NOTICE) lists both, with `crates/charon-ssh`.
+Apache-2.0, see [LICENSE](LICENSE). xterm.js, vendored in `ui/vendor/`, is MIT. [NOTICE](NOTICE) lists both, with [charon-ssh](https://github.com/builtbyfood/charon-ssh), the SSH client.

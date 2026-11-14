@@ -1,5 +1,5 @@
 #!/bin/bash
-# morpheus-certificate-install 0.4.1 — give the fake appliance new SSH host keys (run as root).
+# morpheus-certificate-install 0.4.2 — give the fake appliance new SSH host keys (run as root).
 # Clients that trusted the old key must now refuse to connect: "HOST KEY CHANGED".
 # Only sshd's listener restarts; SSH sessions already open stay up.
 # The VM's own keys in /etc/ssh; `systemctl restart ssh` (sessions are left alone).

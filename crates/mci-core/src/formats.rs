@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.1 — read whatever a CA or customer sends. **Round 1, R1.**
+//! morpheus-certificate-install 0.4.2 — read whatever a CA or customer sends. **Round 1, R1.**
 //!
 //! Port of reference/python/morpheus_certificate_install/formats.py (`parse_one`, `parse_all`) and
 //! certs.parse_files. Detection is by content, never by extension. Order for non-PEM input:
