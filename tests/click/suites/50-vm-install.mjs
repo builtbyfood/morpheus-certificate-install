@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — the whole install, clicked in the page against the fake
+// morpheus-certificate-install 0.4.1 — the whole install, clicked in the page against the fake
 // VM: connect with the TOFU dialog → plan → install → verify green → rollback. The VM is put in
 // its starting state first (tests/click/lib/vm.mjs) and checked over the reference connection.
 import { freshFolder, launch, listDir } from "../lib/app.mjs";

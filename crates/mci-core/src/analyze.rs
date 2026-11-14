@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — chain building and checks. **Round 1, R2.**
+//! morpheus-certificate-install 0.4.1 — chain building and checks. **Round 1, R2.**
 //!
 //! Port of reference certs.analyze(), CertInfo.summary() and Analysis.to_json(). Leaf = the cert
 //! whose SPKI equals the key's (else the first non-CA cert). Walk issuers by Name equality (parsed

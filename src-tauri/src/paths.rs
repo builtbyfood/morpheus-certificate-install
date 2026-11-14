@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — where data lives.
+//! morpheus-certificate-install 0.4.1 — where data lives.
 //!
 //! - **Windows and Linux:** portable mode wins if `portable.flag` sits beside the exe (same rule as
 //!   Charon's paths.rs): config, known_hosts and the webview profile all go in `./data/`. Otherwise

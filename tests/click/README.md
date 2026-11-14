@@ -1,4 +1,4 @@
-# Click tests — morpheus-certificate-install 0.4.0
+# Click tests — morpheus-certificate-install 0.4.1
 
 The real app (the debug build), driven through its page the way a user drives it: real mouse clicks and typing, files chosen in the page's own file input, confirm dialogs answered by clicking their buttons. It runs on Windows, over the Chrome DevTools Protocol that WebView2 exposes when it's started with `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=<port>`. It's plain Node (22 or later): no browser download and no npm packages.
 
@@ -46,4 +46,4 @@ The fake-VM suites change the VM's `/etc/morpheus` and the tool's own state on i
 ## Not covered here
 
 - **Linux** (webkit2gtk has no CDP). The suites are Windows-only for now.
-- **The Charon transport.** Driving a real Charon session needs Travis to name the session and tier first (CLAUDE.md); the engine e2e covers it.
+- **The Charon transport.** Driving a real Charon session needs the maintainer to choose the session and tier first, since it drives whatever that session is connected to; the engine e2e covers it.

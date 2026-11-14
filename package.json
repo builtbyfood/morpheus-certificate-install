@@ -1,6 +1,6 @@
 {
   "name": "morpheus-certificate-install",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,8 @@
     "dev": "tauri dev",
     "check-private": "node scripts/check-private.mjs",
     "check-private:self-test": "node scripts/check-private.mjs --self-test",
+    "check-links": "node scripts/check-links.mjs",
+    "check-gitattributes": "node scripts/check-gitattributes.mjs --git",
     "build": "tauri build",
     "portable": "node scripts/portable.mjs",
     "portable-smoke": "node scripts/portable-smoke.mjs",

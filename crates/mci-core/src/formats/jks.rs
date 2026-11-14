@@ -1,6 +1,6 @@
-//! morpheus-certificate-install 0.4.0 — Java KeyStore (JKS), read natively (no Java, no crate).
+//! morpheus-certificate-install 0.4.1 — Java KeyStore (JKS), read natively (no Java, no crate).
 //!
-//! Format (docs/development/ROUND1.md §R1): magic 0xFEEDFEED, version 2, entry count; entries are
+//! Format: magic 0xFEEDFEED, version 2, entry count; entries are
 //! tag 1 (private key: alias, timestamp, EncryptedPrivateKeyInfo, certificate chain) or
 //! tag 2 (trusted certificate). The last 20 bytes are SHA-1(password as UTF-16BE ‖
 //! "Mighty Aphrodite" ‖ everything before them): that is how a wrong store password is detected.

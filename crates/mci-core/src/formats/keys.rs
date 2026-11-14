@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — private keys, normalised the way the reference writes them.
+//! morpheus-certificate-install 0.4.1 — private keys, normalised the way the reference writes them.
 //!
 //! Whatever the input (PKCS#8, PKCS#1, SEC1, DSA, encrypted PKCS#8, OpenSSL "traditional"
 //! encrypted PEM, OpenSSH), the result is the unencrypted PKCS#8 DER that Python's

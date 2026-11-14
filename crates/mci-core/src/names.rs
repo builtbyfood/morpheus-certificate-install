@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — file names, truststore aliases and SAN matching.
+//! morpheus-certificate-install 0.4.1 — file names, truststore aliases and SAN matching.
 
 use std::net::IpAddr;
 

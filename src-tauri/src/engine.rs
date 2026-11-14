@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the command handlers and job orchestration (R7).
+//! morpheus-certificate-install 0.4.1 — the command handlers and job orchestration (R7).
 //!
 //! Port of reference/python app.py (handlers) + engine.py (preflight/plan/apply/verify/rollback).
 //! Request/response JSON = the Python /api/* bodies; events = events.rs.
@@ -126,7 +126,7 @@ pub fn write_settings(st: &AppState, v: &Value) -> Result<(), String> {
         .map_err(|e| format!("Couldn't write {}: {e}", st.paths.settings().display()))
 }
 
-/// Merge `d` into settings.json, keeping only the allowed keys (CLAUDE.md: no secrets on disk).
+/// Merge `d` into settings.json, keeping only the allowed keys (no secrets on disk: SECURITY.md).
 /// Nothing is written under portable mode's "Leave no trace".
 pub fn save_settings(st: &AppState, d: Value) {
     if st.leave_no_trace.load(Ordering::SeqCst) { return; }

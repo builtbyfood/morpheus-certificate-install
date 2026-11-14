@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — POSIX shell quoting, byte-identical to Python's `shlex.quote`.
+//! morpheus-certificate-install 0.4.1 — POSIX shell quoting, byte-identical to Python's `shlex.quote`.
 
 /// `shlex.quote`: unchanged if every char is in `[A-Za-z0-9_@%+=:,./-]`, `''` if empty,
 /// otherwise single-quoted with each `'` written as `'"'"'`.

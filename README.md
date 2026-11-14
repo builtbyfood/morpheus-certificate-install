@@ -1,6 +1,6 @@
 # Morpheus Certificate Install
 
-*morpheus-certificate-install 0.4.0*
+*morpheus-certificate-install 0.4.1*
 
 Morpheus Certificate Install takes whatever certificate files a CA or a customer sends you and turns them into the files an HPE Morpheus appliance needs. It can then install them on the appliance over SSH: it takes a backup first, shows `morpheus-ctl reconfigure` live, checks what nginx actually serves, and rolls back with one click.
 
@@ -197,7 +197,7 @@ docs/                architecture, parity with the reference, decisions, on-appl
 
 ### The fake appliance, for contributors
 
-The live tests run against a fake Morpheus appliance: an Ubuntu VM that [tests/fake-appliance/install-on-vm.sh](tests/fake-appliance/install-on-vm.sh) sets up with a stand-in `morpheus-ctl`, `keytool` and nginx. [docs/FAKE-APPLIANCE.md](docs/FAKE-APPLIANCE.md) explains how to set it up and point the tests at it. [CONTRIBUTING.md](CONTRIBUTING.md) lists every test tier.
+The live tests run against a fake Morpheus appliance: an Ubuntu VM that [tests/fake-appliance/install-on-vm.sh](tests/fake-appliance/install-on-vm.sh) sets up with a stand-in `morpheus-ctl`, `keytool` and nginx. Use a throwaway VM: the installer creates the user `mcitest` with a known password. [docs/FAKE-APPLIANCE.md](docs/FAKE-APPLIANCE.md) explains how to set it up and point the tests at it. [CONTRIBUTING.md](CONTRIBUTING.md) lists every test tier.
 
 ## License
 

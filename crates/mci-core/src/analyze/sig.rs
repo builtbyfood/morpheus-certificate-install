@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — does a parent's public key verify a child's signature?
+//! morpheus-certificate-install 0.4.1 — does a parent's public key verify a child's signature?
 //!
 //! Always over the TBSCertificate bytes exactly as they appear in the child (never re-encoded).
 //! - RSA PKCS#1 v1.5 with SHA-1, -224, -256, -384, -512;

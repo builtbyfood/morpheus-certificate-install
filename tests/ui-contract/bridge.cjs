@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — UI contract test (npm run test:ui-contract). Needs: npm i, pip install -r reference/python/requirements.txt
+// morpheus-certificate-install 0.4.1 — UI contract test (npm run test:ui-contract). Needs: npm i, pip install -r reference/python/requirements.txt
 const {JSDOM, VirtualConsole} = require("jsdom");
 const fs = require("fs");
 // Starts the Python reference (reference/python) and drives ui/index.html through ui/bridge.js with a fake

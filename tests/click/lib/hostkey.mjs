@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — known_hosts lines with WRONG keys for a host, one per key
+// morpheus-certificate-install 0.4.1 — known_hosts lines with WRONG keys for a host, one per key
 // type the fake appliance may offer (ed25519, ECDSA P-256, RSA): freshly generated, so they can't
 // be the VM's. Pre-seeding them tests the host-key mismatch without rotating the VM's real key
 // (never MCI_TEST_ROTATE from the click tests).

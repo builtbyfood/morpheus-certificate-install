@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — errors: empty input and a rejected command show toasts; a bad
+// morpheus-certificate-install 0.4.1 — errors: empty input and a rejected command show toasts; a bad
 // PFX password shows inline on the file's row (as in the Python page). The watch bar stays hidden
 // until a run starts (here: never, no appliance).
 import { join } from "node:path";

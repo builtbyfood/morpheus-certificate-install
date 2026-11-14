@@ -1,7 +1,7 @@
-# morpheus-certificate-install 0.4.0
+# morpheus-certificate-install 0.4.1
 [package]
 name = "mci-core"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 license = "Apache-2.0"
 description = "Format conversion, chain analysis and appliance command generation for morpheus-certificate-install"
@@ -58,5 +58,5 @@ pbkdf2 = { version = "0.12", default-features = false, features = ["hmac"] }
 base64 = "0.22"
 # Export .zip, built in memory (no I/O): the key entry gets mode 0600. 9.x clears the extraction advisories.
 zip = { version = "9", default-features = false, features = ["deflate"] }
-# JKS: implemented natively in src/formats/jks.rs (format notes in docs/development/ROUND1.md §R1).
+# JKS: implemented natively in src/formats/jks.rs (format notes at the top of that file).
 # Readers for PKCS#12, PKCS#7 and JKS are our own, over src/formats/tlv.rs (bounds-checked, BER-aware).

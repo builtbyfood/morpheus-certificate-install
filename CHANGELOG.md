@@ -1,6 +1,63 @@
 # Changelog
 
-## 0.4.0 — 2026-11-13
+## 0.4.1 — 2026-11-13
+
+**Security update.** The SQLite library built into the app is updated, fixing RUSTSEC-2026-0459 in the bundled SQLite (libsqlite3-sys 0.30.1 → 0.40.0).
+
+The app uses SQLite for one thing only: when you choose a Charon session on the Connect step, it reads the saved hosts from Charon's local database (`charon.db`) on your computer. It opens that file **read-only**, reads only host, port, user, jump host and tags, and never reads saved credentials. Nothing else in the app uses SQLite, and no data from an appliance or the network goes through it. If you don't use Charon, the app never opens it. Updating is still recommended.
+
+Nothing else in the app changed. The repository also gets back what was missing from the 0.4.0 source tree: the Python reference (`reference/`), the charon-ssh patches, the build, parity, verification and release documents, and the fake appliance for contributors (`tests/fake-appliance/`, `docs/FAKE-APPLIANCE.md`). Text files are now stored with LF line endings on every platform.
+
+<!-- end of release notes -->
+
+### Maintainer notes: 0.4.1
+
+- **rusqlite 0.32 → 0.42** (`src-tauri/Cargo.toml`, `bundled` kept), which brings libsqlite3-sys 0.30.1 → 0.40.0 (the fix is in ≥ 0.39.0).
+  - Lock changes from the same update: hashlink 0.9 → 0.12, ahash removed, and `sqlite-wasm-rs` / `rsqlite-vfs` added. Those two are wasm32-only dependencies of libsqlite3-sys, so they're never built here.
+  - rusqlite 0.42 needs Rust ≥ 1.89, and CI uses stable.
+  - `charon_mcp::saved_hosts` compiled unchanged: `open_with_flags(READ_ONLY | NO_MUTEX)`, `busy_timeout`, `prepare`, `query_map` and `types::Value` have the same API. It stays read-only, selecting only the `json_extract` keys.
+- **New offline test `src-tauri/tests/charon_saved_hosts.rs`,** run in CI on every platform. Until now the "charon.db unchanged" check lived only in the ignored live tests (`charon_mock`, `charon_live`). It covers:
+  - inheritance down two folder levels, the sort order, and no secret in the output (credential, password and key passphrase fields planted);
+  - the main file's bytes unchanged, both with Charon closed and while Charon holds it open in WAL mode (Charon uses `journal_mode = WAL`), with a row still only in the `-wal` file, which the reader still sees;
+  - the reader's open flags refuse a write.
+- **`cargo audit`** on the whole workspace: clean. Only the two allowed warnings remain, `proc-macro-error` (unmaintained) and `glib` 0.18 (unsound), from the Linux GTK stack.
+- **New `.github/workflows/audit.yml`:** `cargo audit` every Monday at 06:17 UTC, and on demand. GitHub disables scheduled workflows after 60 days without repository activity; the file says how to re-enable it.
+- **Public 0.4.0 was missing 32 files that should be public:** all of `reference/` (18), `docs/charon-ssh-patches/` (9), and `docs/` BUILD-LINUX, BUILD-MACOS, PARITY, RELEASE-CHECKLIST and VERIFY-ON-APPLIANCE.
+  - **Cause:** the export was complete; the 249 files in the publish folder included all of them, and every file in the GitHub checkout is byte-identical to its copy there. Between the copy (08:54) and the `v0.4.0` commit, they were deleted by hand from the GitHub checkout: the Recycle Bin holds `reference`, `tests/fake-appliance` and six docs from that folder, deleted 08:57–09:11. The patches folder isn't there (likely Shift+Delete). Git ignore rules weren't involved: there's no `.git/info/exclude`, the global ignore file only names `.claude/settings.local.json`, and git adds all 249 files of a fresh export.
+  - **Also found:** `tracked-files.mjs` read only the root `.gitignore`. `reference/python/.pytest_cache/` has its own (`*`), so the export copied 4 cache files that git then left out. Every `.gitignore` now counts, scoped to its folder, as in git. A `.gitignore` using `!` or `**` (unsupported) makes the scripts stop instead of guessing. The lists are sorted.
+  - 0.4.1 restores them all: the publish commit is a full export of the published tree.
+- **export-tree manifest check:** after copying, it lists the folder (except `.git`) and fails on any file missing, extra or not byte-identical to the source. `npm run export-tree -- --list` prints the published list. The release checklist's new section "The file list" has a PowerShell one-liner to run after `git add -A`, which compares `git ls-files` with that list, so a hand deletion or a machine-local ignore rule shows up before the commit. Tested on a scratch repo: OK on a clean export, and it listed all 10 files after deleting `docs/PARITY.md` and `docs/charon-ssh-patches/`.
+- **Link check, `scripts/check-links.mjs`** (`npm run check-links`, plus `--self-test`), run in CI's `test` job:
+  - every relative link and image in every published `.md` must resolve, along with reference definitions and HTML `href`/`src`;
+  - the target must be in the **published** tree, so a link to a local-only file fails;
+  - `#anchors` must match a heading, slugged as GitHub does;
+  - code is skipped, and `reference/python/` (frozen) isn't checked.
+
+  Against the public 0.4.0 it reports the 8 broken links: six in README and CONTRIBUTING, plus two to `docs/charon-ssh-patches/` in CHARON-SSH-CHANGES. The 0.4.1 tree has none.
+- **The fake appliance is published again; the Claude Code material stays local** (Travis, before the 0.4.1 commit).
+  - `LOCAL_ONLY` in `tracked-files.mjs` now lists only `CLAUDE.md` and `docs/development/`. `tests/fake-appliance/` and `docs/FAKE-APPLIANCE.md` are exported: 256 files in all.
+  - The README's "fake appliance, for contributors" section, CONTRIBUTING rule 2 and the pointers in the live tests, the click README, `run.mjs`, `bridge.cjs` and BUILD-MACOS link to them again.
+  - No published file links to `CLAUDE.md` or `docs/development/`; the release checklist's gate step B names the manual check without a link. `check-links` enforces it.
+  - The README section and FAKE-APPLIANCE.md now say to use a throwaway VM: the installer creates `mcitest` with password `hunter2` and sudo rights.
+- **export-tree also checks the exported folder,** after the manifest check:
+  - its Markdown links (`check-links`, reading the exported files);
+  - its `.gitattributes` against its files (`check-gitattributes`).
+
+  Either failing fails the export.
+- **Line endings.** Travis saw about 115 files "modified" in a fresh clone of 0.4.0 and suspected CRLF in the repository. It isn't:
+  - `git ls-files --eol` in the clone shows 192 files `i/lf` and 21 `i/-text`. The only `i/crlf` is `fixtures/corpus/win.cer`, which is CRLF on purpose.
+  - The modifications are 0.4.1's real changes: `git diff --stat` and `git diff --stat --ignore-cr-at-eol` both give the same 103 files, +320/−185.
+  - The real gap: 36 text files had no line-ending rule (`.gitignore`, LICENSE, NOTICE, Cargo.lock, the .css, .txt, .pem, .py, .xml, .svg and .patch files, and `reference/`). With Git for Windows' system `core.autocrlf=true`, they were checked out CRLF, hence git's "LF will be replaced by CRLF" warnings.
+  - **`.gitattributes` rewritten:** a `* text=auto eol=lf` default, an explicit `text eol=lf` line for every text type in the tree, explicit `binary` for .png, .ico, .icns, .der, .cer, .pfx, .p12, .jks, .p7c and .pvk, and the byte-exact `fixtures/**` and `formats/testdata/**` (`-text`) last, so they win.
+- **New `scripts/check-gitattributes.mjs`** (`npm run check-gitattributes`), run in CI's `test` job with `--git`, and its rules part by export-tree:
+  - every text file needs an explicit `text eol=lf` line (the default doesn't count, so a new type fails until it's listed) and must hold no CR;
+  - a binary file must not be marked text;
+  - byte-exact files are left alone;
+  - `--git` stages the published files in a temp repo with `core.autocrlf=true` and requires `git ls-files --eol` to show every text file stored LF.
+
+  Result: 179 text files, 62 byte-exact, 21 binary, all stored LF. Against the old `.gitattributes` it reports the 36 uncovered files.
+- **Release checklist section D:** a later release in the public repository. It clones the repository if needed, exports, checks the file list, then makes a normal commit and tag (no amend, no force-push).
+
 
 The first release of Morpheus Certificate Install as a standalone desktop app. It takes whatever certificate files a CA or a customer sends and turns them into the files an HPE Morpheus appliance needs. Then, if you want, it installs them over SSH with a backup first, a live view of `morpheus-ctl reconfigure`, a check of what nginx serves, and rollback.
 
@@ -50,6 +107,8 @@ Not supported: Ed448 keys, JCEKS keystores (convert with `keytool` first), and a
 - **The bump to 0.4.0** is done here, so the checklist's C1 is now a check.
 - **The README screenshots** were taken again (`tests/click`, suite `screenshots`, against the fake VM), so they show the new seal and v0.4.0.
 - **Fixed: `chain.png` didn't show the chain.** The suite typed into step 4's address field just before that capture, which scrolled the page to steps 3–5, so the R8 image never showed the chain or its seals. The suite now scrolls the chain into view and waits until it's fully visible.
+- **The Claude Code material isn't published.** `CLAUDE.md` and `docs/development/` (KICKOFF, ROUND1, MANUAL-CHECK-R7, PUBLISH-BRIEF) stay in the development folder but are left out of the publish tree. `LOCAL_ONLY` and `publishedFiles()` in `scripts/tracked-files.mjs` drive `export-tree` and `fresh-clone-check`, and `check-private` still scans them. Published files no longer point at them: code comments in `mci-core`, `src-tauri` and the tests, plus DECISIONS.md, BUILD-LINUX.md, the click README and the release checklist. The older entries in this changelog still name them, as history.
+- **The fake appliance isn't published either:** `tests/fake-appliance/` and `docs/FAKE-APPLIANCE.md` are local-only too. README, CONTRIBUTING, BUILD-MACOS and the test headers now speak of a disposable test machine, and say that the maintainer runs the live tests before each release. The live tests stay in the repository (ignored without `MCI_TEST_SSH`).
 
 ## 0.4.0-rc2 — 2026-11-13
 

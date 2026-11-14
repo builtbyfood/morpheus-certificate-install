@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — engine tests with a recording transport (R7).
+//! morpheus-certificate-install 0.4.1 — engine tests with a recording transport (R7).
 //!
 //! `apply` sends the appliance exactly fixtures/golden/apply-command-sequence.json: the reference's
 //! preflight + apply, recorded by make-cases.py with the same fake answers as `Rec` here.

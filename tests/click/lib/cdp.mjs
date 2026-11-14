@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — a minimal Chrome DevTools Protocol client (Node's built-in
+// morpheus-certificate-install 0.4.1 — a minimal Chrome DevTools Protocol client (Node's built-in
 // WebSocket and fetch; no dependencies). WebView2 exposes CDP when the app is started with
 // WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=<port>.
 

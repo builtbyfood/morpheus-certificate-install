@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — the SSH transport against the fake appliance (R5).
+//! morpheus-certificate-install 0.4.1 — the SSH transport against the fake appliance (R5).
 //!
 //! Ignored unless asked for, because it needs a live host:
 //!   MCI_TEST_SSH=host:port:user:password cargo test -p morpheus-certificate-install --test ssh_fake_appliance -- --ignored --nocapture
@@ -10,7 +10,7 @@
 //! Two tests: the main one below, and `rotated_host_key_is_refused`, which rotates the fake's host
 //! keys for good and so runs only with MCI_TEST_ROTATE=1.
 //!
-//! Covers docs/development/ROUND1.md §R5's definition of done — connect with the TOFU round trip, password sudo
+//! Covers the SSH transport's definition of done — connect with the TOFU round trip, password sudo
 //! detected, put_root, a sudo command, follow a run to its rc — plus the password-leak check the
 //! Python e2e test did: afterwards nothing under /etc/morpheus, /var/lib/morpheus-certificate-install
 //! or /var/log/morpheus-certificate-install contains the sudo password.

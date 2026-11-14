@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — should "Trust this CA inside Morpheus" start ticked?
+//! morpheus-certificate-install 0.4.1 — should "Trust this CA inside Morpheus" start ticked?
 //!
 //! Decided from the actual certificates, not their names (PARITY divergence 28; the reference page
 //! matched the top CN against a list of CA brands). The CAs looked at: the chain (intermediates and

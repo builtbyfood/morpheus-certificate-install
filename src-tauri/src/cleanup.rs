@@ -1,4 +1,4 @@
-//! morpheus-certificate-install 0.4.0 — "Clean up this appliance", "Forget this appliance" and
+//! morpheus-certificate-install 0.4.1 — "Clean up this appliance", "Forget this appliance" and
 //! portable mode's "Leave no trace".
 //!
 //! Cleanup works like install: `cleanup_list` shows what the tool left (runner scripts, run logs,

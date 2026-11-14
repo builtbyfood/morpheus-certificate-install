@@ -1,7 +1,7 @@
-# morpheus-certificate-install 0.4.0
+# morpheus-certificate-install 0.4.1
 [package]
 name = "morpheus-certificate-install"
-version = "0.4.0"
+version = "0.4.1"
 description = "Convert and install CA-signed certificates on an HPE Morpheus appliance"
 authors = ["Travis DeLuca"]
 license = "Apache-2.0"
@@ -16,7 +16,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 mci-core = { path = "../crates/mci-core" }
-# SSH (exec, stdin, streaming, PTY, host keys). See docs/development/ROUND1.md §R5 for what may need adding to the crate.
+# SSH (exec, stdin, streaming, PTY, host keys): crates/charon-ssh; changes to it are listed in docs/CHARON-SSH-CHANGES.md.
 charon-ssh = { workspace = true }
 tauri = { version = "2", features = [] }
 tauri-plugin-dialog = "2"
@@ -43,7 +43,7 @@ rustls-platform-verifier = "0.6"
 rustls-native-certs = "0.8"
 tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
 # Charon saved hosts (read-only)
-rusqlite = { version = "0.32", features = ["bundled"] }
+rusqlite = { version = "0.42", features = ["bundled"] }
 # Export .zip: built by mci_core::export::to_zip (key entry 0600, made-by-Unix); no zip dependency here.
 
 [dev-dependencies]

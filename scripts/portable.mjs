@@ -1,4 +1,4 @@
-// morpheus-certificate-install 0.4.0 — `npm run portable`: release build, then a portable bundle:
+// morpheus-certificate-install 0.4.1 — `npm run portable`: release build, then a portable bundle:
 // the GUI exe + the CLI exe + an empty portable.flag (data then lives in ./data/ beside them).
 // Windows → dist-portable/morpheus-certificate-install-windows-portable.zip
 // Linux   → dist-portable/morpheus-certificate-install-linux-portable-<arch>.tar.gz (needs webkit2gtk-4.1 on the host)
